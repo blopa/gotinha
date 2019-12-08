@@ -11,12 +11,14 @@ export default class extends Phaser.Scene {
      * load your assets
      *
      */
-        this.load.image('blocks', 'assets/images/blocks.png');
+        this.load.spritesheet('blocks', 'assets/images/blocks.png', {
+            frameWidth: 32,
+            frameHeight: 16,
+        });
         this.load.image('broken_blocks', 'assets/images/broken_blocks.png');
         this.load.image('items', 'assets/images/items.png');
         this.load.image('base', 'assets/images/base.png');
         this.load.image('ball', 'assets/images/ball.png');
-        this.load.tilemapTiledJSON('blocksTilemap', 'src/tilesets/blocks.json');
     }
 
     create() {
