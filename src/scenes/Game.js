@@ -121,7 +121,9 @@ export default class extends Phaser.Scene {
         this.aKey = this.input.keyboard.addKey('A');
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
         this.physics.world.setBoundsCollision();
-        this.physics.add.collider(this.base, this.ball);
+        this.physics.add.collider(this.base, this.ball, (a, b) => {
+            console.log(a, b);
+        });
 
         this.physics.world.on('worldbounds', (body, top, bottom, left, right) => {
             if (bottom && body.gameObject.texture.key === this.ball.texture.key) {
