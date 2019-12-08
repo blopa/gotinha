@@ -32,6 +32,15 @@ export default class extends Phaser.Scene {
          * });
          */
 
+        this.base = this.physics.add.sprite(240, 280, 'base')
+          .setImmovable(false);
+        this.base.body.setAllowGravity(false);
+        this.base.setCollideWorldBounds(true);
+
+        this.ball = this.physics.add.sprite(240, 273, 'ball');
+        this.ball.body.setAllowGravity(false);
+        this.ball.setCollideWorldBounds(true);
+
         // array 60
         const blocks = [1, 2, 3, 4, 5, 6, 57, 55, 33, 35, 7, 48, 49, 52, 21, 23, 24, 29, 17, 54, 40, 10, 43, 39, 50, 53, 58, 47, 8, 14, 26, 20, 36, 18, 42, 2, 9, 1, 11, 28, 27, 19, 22, 4, 51, 44, 3, 41, 31, 32, 56, 13, 25, 6, 0, 46, 59, 30, 34, 12, 15, 5, 38, 45, 16, 37];
         let x = 0;
@@ -55,6 +64,10 @@ export default class extends Phaser.Scene {
                 health: frame,
             });
             this.add.existing(mushroom);
+            this.physics.add.existing(mushroom);
+            mushroom.body.allowGravity = false;
+            mushroom.body.setImmovable(true);
+            this.physics.add.collider(mushroom, this.ball);
             this.allBlocks.add(mushroom);
 
             if (x < 320) {
@@ -89,21 +102,13 @@ export default class extends Phaser.Scene {
          * });
          */
 
-        this.base = this.physics.add.sprite(240, 280, 'base')
-            .setImmovable(false);
-        this.base.body.setAllowGravity(false);
-        this.base.setCollideWorldBounds(true);
-
-        this.ball = this.physics.add.sprite(240, 273, 'ball');
-        this.ball.body.setAllowGravity(false);
-        this.ball.setCollideWorldBounds(true);
-
         this.input.enabled = true;
         this.dKey = this.input.keyboard.addKey('D');
         this.aKey = this.input.keyboard.addKey('A');
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
         this.physics.world.setBoundsCollision();
         this.physics.add.collider(this.base, this.ball);
+        // console.log(this.allBlocks);
     }
 
     update() {
