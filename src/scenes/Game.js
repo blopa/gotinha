@@ -1,27 +1,29 @@
 /* globals __DEV__ */
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 
-import Mushroom from '../sprites/Mushroom'
+import Mushroom from '../sprites/Mushroom';
 
 export default class extends Phaser.Scene {
-  constructor () {
-    super({ key: 'GameScene' })
-  }
-  init () {}
-  preload () {}
+    constructor() {
+        super({ key: 'GameScene' });
+    }
 
-  create () {
-    this.mushroom = new Mushroom({
-      scene: this,
-      x: 400,
-      y: 300,
-      asset: 'mushroom'
-    })
+    init() {
+        // TODO
+    }
 
-    this.add.existing(this.mushroom)
-    this.add.text(100, 100, 'Phaser 3 - ES6 - Webpack ', {
-      font: '64px Bangers',
-      fill: '#7744ff'
-    })
-  }
+    preload() {
+        // TODO
+    }
+
+    create() {
+        this.mushroom = new Mushroom({
+            scene: this,
+            x: 400,
+            y: 300,
+            asset: 'base',
+        });
+
+        this.add.existing(this.mushroom);
+    }
 }
