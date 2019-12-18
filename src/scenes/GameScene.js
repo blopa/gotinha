@@ -28,27 +28,18 @@ export default class extends Phaser.Scene {
     }
 
     create() {
-        /*
-         * this.mushroom = new Mushroom({
-         *     scene: this,
-         *     x: 400,
-         *     y: 300,
-         *     asset: 'base',
-         * });
-         * this.add.existing(this.mushroom);
-         */
-
         console.log(this.config);
+        // add background image
         this.add.image(0, 0, 'background').setY(100);
 
+        // add hero sprites and physics
         this.hero = this.physics.add.sprite(this.config.heroXPosition, 600, 'hero', 'drop_10')
             .setOrigin(0, 0)
             .setImmovable();
-
-        // this.hero.body.height = 15;
         this.hero.body.width = 20;
         console.log(this.hero.body);
 
+        // add blocks physics and groups
         this.blocksGroup = this.physics.add.group();
         const height = this.config.tileSize * 20;
         let y = -height;
@@ -88,9 +79,30 @@ export default class extends Phaser.Scene {
         }
         console.log(this.blocksGroup);
         console.log(this.hero);
+
+        // add spikes
+        const spike = this.make.sprite({
+            height: 7,
+            width: 11,
+            x: 27,
+            y: 30,
+            angle: 90,
+            key: 'items',
+            frame: 'items_18',
+            flipX: true,
+            immutable: true,
+            origin: {
+                x: 0,
+                y: 0,
+            },
+        });
+        this.blocksGroup.add(spike);
+        spike.body.setOffset(-10, -10);
+
+        // set group speed
         this.blocksGroup.setVelocity(0, this.speed);
 
-        // creates animation
+        // creates hero animation
         this.anims.create({
             key: 'walking',
             frames: this.anims.generateFrameNames('hero', {
@@ -109,11 +121,20 @@ export default class extends Phaser.Scene {
             frameRate: 6,
         });
 
+        // plays animation
         this.hero.anims.play('walking');
-        this.physics.add.collider(this.hero, this.blocksGroup);
+
+        // set collision
+        this.physics.add.collider(this.hero, this.blocksGroup, (hero, foe) => {
+            if (foe.body.gameObject.texture.key === 'items') {
+                // TODO
+                console.log(1);
+            }
+        });
     }
 
     update() {
+        // hero moving commands
         if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
             this.hero.anims.play('jumping');
 
@@ -140,6 +161,7 @@ export default class extends Phaser.Scene {
             this.hero.anims.play('walking');
         }
 
+        // calculates the restart of the blocks chink
         for (const sprite of this.blocksGroup.children.entries) {
             if (sprite.y - 320 >= 640) {
                 sprite.y = -(this.config.tileSize * 10);
