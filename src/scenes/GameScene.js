@@ -10,7 +10,7 @@ export default class extends Phaser.Scene {
         // TODO
         this.hero = {};
         this.speed = 100;
-        this.jumpSpeed = 400;
+        this.jumpSpeed = 800;
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
 
         this.config = {
@@ -40,6 +40,7 @@ export default class extends Phaser.Scene {
         console.log(this.hero.body);
 
         // add blocks physics and groups
+        // TODO
         this.blocksGroup = this.physics.add.group();
         const height = this.config.tileSize * 20;
         let y = -height;
@@ -81,7 +82,7 @@ export default class extends Phaser.Scene {
         console.log(this.hero);
 
         // add spikes
-        const spike = this.make.sprite({
+        const spikeConfig = {
             height: 7,
             width: 11,
             x: 27,
@@ -90,14 +91,32 @@ export default class extends Phaser.Scene {
             key: 'items',
             frame: 'items_18',
             flipX: true,
-            immutable: true,
+            // immovable: true,
             origin: {
                 x: 0,
                 y: 0,
             },
-        });
-        this.blocksGroup.add(spike);
-        spike.body.setOffset(-10, -10);
+        };
+
+        // MEGA TODO
+        for (let i = 0; i < 10; i++) {
+            y = spikeConfig.y * Math.random() * 100;
+            const spikeLeft = this.make.sprite({
+                ...spikeConfig,
+                y,
+            }).setName('spike');
+            const spikeRight = this.make.sprite({
+                ...spikeConfig,
+                x: 123,
+                y: y + 30 * Math.random(),
+                flipY: true,
+            }).setName('spike');
+
+            this.blocksGroup.add(spikeLeft);
+            this.blocksGroup.add(spikeRight);
+            spikeLeft.body.setOffset(-10, -10).setImmovable();
+            spikeRight.body.setOffset(3, -10).setImmovable();
+        }
 
         // set group speed
         this.blocksGroup.setVelocity(0, this.speed);
@@ -126,9 +145,9 @@ export default class extends Phaser.Scene {
 
         // set collision
         this.physics.add.collider(this.hero, this.blocksGroup, (hero, foe) => {
-            if (foe.body.gameObject.texture.key === 'items') {
-                // TODO
-                console.log(1);
+            if (foe.name === 'spike') {
+                console.log('game over!');
+                this.scene.restart();
             }
         });
     }
