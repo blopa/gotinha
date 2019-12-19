@@ -1,7 +1,13 @@
 /* globals __DEV__ */
 import Phaser from 'phaser';
 import { generateRandomPositionsArray } from '../utils';
-import { SPIKE_TO_LEFT_SIDE, SPIKE_TO_RIGHT_SIDE } from '../constants';
+import {
+    MAIN_SPIKES_GROUP,
+    SECONDARY_SPIKES_GROUP,
+    SPIKE_TO_LEFT_SIDE,
+    SPIKE_TO_RIGHT_SIDE,
+    TERTIARY_SPIKES_GROUP,
+} from '../constants';
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -15,6 +21,7 @@ export default class extends Phaser.Scene {
         this.jumpSpeed = 800;
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
         this.input.on('pointerdown', () => this.moveHero());
+        this.lastUsedGroup = MAIN_SPIKES_GROUP;
 
         this.config = {
             tileSize: 16,
@@ -32,11 +39,9 @@ export default class extends Phaser.Scene {
     }
 
     create() {
-        console.log(this.config);
-        /*
-         * console.log(generateRandomSpikePositions(20));
-         * add background image
-         */
+        // console.log(this.config);
+
+        // add background image
         this.add.image(0, 0, 'background').setY(100);
 
         // add hero sprites and physics
@@ -44,14 +49,14 @@ export default class extends Phaser.Scene {
             .setOrigin(0, 0)
             .setImmovable();
         this.hero.body.width = 20;
-        console.log(this.hero.body);
+        this.physics.world.setBoundsCollision();
+        // console.log(this.hero.body);
 
-        /*
-         * add blocks physics and groups
-         * TODO
-         */
+        // add blocks physics and groups
         this.blocksGroup = this.physics.add.group();
-        this.spikesGroup = this.physics.add.group();
+        this.mainSpikeGroup = this.physics.add.group();
+        this.secondarySpikeGroup = this.physics.add.group();
+        this.tertiarySpikeGroup = this.physics.add.group();
         const height = this.config.chunkSize;
         let y = -height;
         for (let i = 0; i < 4; i++) {
@@ -88,8 +93,9 @@ export default class extends Phaser.Scene {
             rightBlock.body.setImmovable();
             y += height - this.config.tileSize;
         }
-        console.log(this.blocksGroup);
-        console.log(this.hero);
+        // console.log(this.blocksGroup);
+
+        // console.log(this.hero);
 
         // add spikes
         const spikeConfig = {
@@ -108,43 +114,13 @@ export default class extends Phaser.Scene {
             },
         };
 
-        // MEGA TODO
-        const spikesArray = generateRandomPositionsArray(10);
-        let spikePosition = 0;
-        let side = SPIKE_TO_LEFT_SIDE;
-
-        // loop spikes for both sides
-        for (const spikeBlock of spikesArray) {
-            spikePosition += this.config.tileSize;
-            if (spikeBlock === 0) {
-                continue;
-            }
-
-            let spike;
-            if (side === SPIKE_TO_LEFT_SIDE) {
-                spike = this.make.sprite({
-                    ...spikeConfig,
-                    y: spikePosition,
-                });
-                this.spikesGroup.add(spike);
-                spike.body.setOffset(-10, -10).setImmovable();
-                side = SPIKE_TO_RIGHT_SIDE;
-            } else {
-                spike = this.make.sprite({
-                    ...spikeConfig,
-                    y: spikePosition,
-                    x: 123,
-                    flipY: true,
-                });
-                this.spikesGroup.add(spike);
-                spike.body.setOffset(3, -10).setImmovable();
-                side = SPIKE_TO_LEFT_SIDE;
-            }
-        }
+        // generate spikes
+        this.generateSpikes(spikeConfig, this.mainSpikeGroup, 8);
 
         // set group speed
         this.blocksGroup.setVelocity(0, this.speed);
-        this.spikesGroup.setVelocity(0, this.speed);
+        this.mainSpikeGroup.setVelocity(0, this.speed);
+        // this.secondarySpikeGroup.setVelocity(0, this.speed);
 
         // creates hero animation
         this.anims.create({
@@ -170,9 +146,39 @@ export default class extends Phaser.Scene {
 
         // set collision
         this.physics.add.collider(this.hero, this.blocksGroup);
-        this.physics.add.collider(this.hero, this.spikesGroup, (hero, foe) => {
-            console.log('game over!');
-            this.scene.restart();
+        this.physics.add.collider(this.hero, this.mainSpikeGroup, this.gameOver);
+        this.physics.add.collider(this.hero, this.secondarySpikeGroup, this.gameOver);
+        this.physics.add.collider(this.hero, this.tertiarySpikeGroup, this.gameOver);
+        this.physics.world.on('worldbounds', (body, top, bottom, left, right) => {
+            if (bottom && body.gameObject.name === 'triggerSpikes') {
+                body.gameObject.destroy();
+                switch (this.lastUsedGroup) {
+                    case MAIN_SPIKES_GROUP: {
+                        this.generateSpikes(spikeConfig, this.secondarySpikeGroup, 5);
+                        this.secondarySpikeGroup.setVelocity(0, this.speed);
+                        this.tertiarySpikeGroup.clear(true, true);
+                        this.lastUsedGroup = SECONDARY_SPIKES_GROUP;
+                        break;
+                    }
+                    case SECONDARY_SPIKES_GROUP: {
+                        this.generateSpikes(spikeConfig, this.tertiarySpikeGroup, 5);
+                        this.tertiarySpikeGroup.setVelocity(0, this.speed);
+                        this.mainSpikeGroup.clear(true, true);
+                        this.lastUsedGroup = TERTIARY_SPIKES_GROUP;
+                        break;
+                    }
+                    case TERTIARY_SPIKES_GROUP: {
+                        this.generateSpikes(spikeConfig, this.mainSpikeGroup, 5);
+                        this.mainSpikeGroup.setVelocity(0, this.speed);
+                        this.secondarySpikeGroup.clear(true, true);
+                        this.lastUsedGroup = MAIN_SPIKES_GROUP;
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            }
         });
     }
 
@@ -203,6 +209,53 @@ export default class extends Phaser.Scene {
             }
         }
     }
+
+    generateSpikes = (spikeConfig, group, quantity) => {
+        const spikesArray = generateRandomPositionsArray(quantity);
+        let spikePosition = 0;
+        let side = SPIKE_TO_LEFT_SIDE;
+
+        // loop spikes for both sides
+        for (const spikeIndex in spikesArray) {
+            spikePosition += this.config.tileSize;
+            if (spikesArray[spikeIndex] === 0) {
+                continue;
+            }
+
+            let spike;
+            if (side === SPIKE_TO_LEFT_SIDE) {
+                spike = this.make.sprite({
+                    ...spikeConfig,
+                    y: spikePosition,
+                });
+                group.add(spike);
+                spike.body.setOffset(-10, -10).setImmovable();
+                side = SPIKE_TO_RIGHT_SIDE;
+            } else {
+                spike = this.make.sprite({
+                    ...spikeConfig,
+                    y: spikePosition,
+                    x: 123,
+                    flipY: true,
+                });
+                group.add(spike);
+                spike.body.setOffset(3, -10).setImmovable();
+                side = SPIKE_TO_LEFT_SIDE;
+            }
+
+            if (Number(spikeIndex) + 1 === spikesArray.length) {
+                spike.body.onWorldBounds = true;
+                spike.body.setCollideWorldBounds(true);
+                spike.setName('triggerSpikes');
+            }
+        }
+    }
+
+    gameOver = (hero, foe) => {
+        console.log('game over!');
+        // alert('GAME OVER!');
+        this.scene.restart();
+    };
 
     moveHero = () => {
         this.hero.anims.play('jumping');

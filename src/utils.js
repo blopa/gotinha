@@ -10,5 +10,7 @@ export const generateRandomPositionsArray = (quantity) => {
         array.push(0, Math.round(Math.random()), 0);
     }
 
+    array.push(0, 1);
+
     return array;
 };
