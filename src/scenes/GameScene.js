@@ -1,5 +1,6 @@
 /* globals __DEV__ */
 import Phaser from 'phaser';
+import { generateRandomSpikePositions } from '../utils';
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -20,6 +21,7 @@ export default class extends Phaser.Scene {
         this.config = {
             ...this.config,
             heroXPosition: this.game.config.width - this.config.tileSize,
+            chunkSize: this.config.tileSize * 20,
         };
     }
 
@@ -29,6 +31,7 @@ export default class extends Phaser.Scene {
 
     create() {
         console.log(this.config);
+        // console.log(generateRandomSpikePositions(20));
         // add background image
         this.add.image(0, 0, 'background').setY(100);
 
@@ -42,7 +45,7 @@ export default class extends Phaser.Scene {
         // add blocks physics and groups
         // TODO
         this.blocksGroup = this.physics.add.group();
-        const height = this.config.tileSize * 20;
+        const height = this.config.chunkSize;
         let y = -height;
         for (let i = 0; i < 4; i++) {
             const leftBlock = this.make.tileSprite({
@@ -99,24 +102,64 @@ export default class extends Phaser.Scene {
         };
 
         // MEGA TODO
-        for (let i = 0; i < 10; i++) {
-            y = spikeConfig.y * Math.random() * 100;
+        const spikesArray = generateRandomSpikePositions(20);
+        let spikePosition = 0;
+
+        // loop spikes for the left size
+        for (const spikeBlock of spikesArray.array1) {
+            spikePosition += this.config.tileSize;
+            if (spikeBlock === 0) {
+                continue;
+            }
+
             const spikeLeft = this.make.sprite({
                 ...spikeConfig,
-                y,
-            }).setName('spike');
-            const spikeRight = this.make.sprite({
-                ...spikeConfig,
-                x: 123,
-                y: y + 30 * Math.random(),
-                flipY: true,
+                y: spikePosition,
             }).setName('spike');
 
             this.blocksGroup.add(spikeLeft);
-            this.blocksGroup.add(spikeRight);
             spikeLeft.body.setOffset(-10, -10).setImmovable();
-            spikeRight.body.setOffset(3, -10).setImmovable();
         }
+
+        // loop spikes for the right size
+        spikePosition = 0;
+        for (const spikeBlock of spikesArray.array2) {
+            spikePosition += this.config.tileSize;
+            if (spikeBlock === 0) {
+                continue;
+            }
+
+            const spikeRight = this.make.sprite({
+                ...spikeConfig,
+                y: spikePosition,
+                x: 123,
+                flipY: true,
+            }).setName('spike');
+
+            this.blocksGroup.add(spikeRight);
+            spikeRight.body.setOffset(3, -10).setImmovable();
+
+            spikePosition += this.config.tileSize;
+        }
+
+        // for (let i = 0; i < 10; i++) {
+        //     y = spikeConfig.y * Math.random() * 100;
+        //     const spikeLeft = this.make.sprite({
+        //         ...spikeConfig,
+        //         y,
+        //     }).setName('spike');
+        //     const spikeRight = this.make.sprite({
+        //         ...spikeConfig,
+        //         x: 123,
+        //         y: y + 30 * Math.random(),
+        //         flipY: true,
+        //     }).setName('spike');
+        //
+        //     this.blocksGroup.add(spikeLeft);
+        //     this.blocksGroup.add(spikeRight);
+        //     spikeLeft.body.setOffset(-10, -10).setImmovable();
+        //     spikeRight.body.setOffset(3, -10).setImmovable();
+        // }
 
         // set group speed
         this.blocksGroup.setVelocity(0, this.speed);
@@ -181,9 +224,9 @@ export default class extends Phaser.Scene {
         }
 
         // calculates the restart of the blocks chink
-        for (const sprite of this.blocksGroup.children.entries) {
-            if (sprite.y - 320 >= 640) {
-                sprite.y = -(this.config.tileSize * 10);
+        for (const blockChunk of this.blocksGroup.children.entries) {
+            if (blockChunk.y - 320 >= 640) {
+                blockChunk.y = -(this.config.chunkSize / 2);
             }
         }
     }
