@@ -22,6 +22,9 @@ export default class extends Phaser.Scene {
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
         this.input.on('pointerdown', () => this.moveHero());
         this.lastUsedGroup = MAIN_SPIKES_GROUP;
+        this.lastGroupSpikePosition = null;
+        this.score = 0;
+        this.scoring = null;
 
         this.config = {
             tileSize: 16,
@@ -31,6 +34,7 @@ export default class extends Phaser.Scene {
             ...this.config,
             heroXPosition: this.game.config.width - this.config.tileSize,
             chunkSize: this.config.tileSize * 20,
+            spaceBetweenSpikes: 12,
         };
     }
 
@@ -39,6 +43,9 @@ export default class extends Phaser.Scene {
     }
 
     create() {
+        // TODO
+        this.scoreText = this.add.text(35, 620, '00000000').setDepth(999);
+        this.scoring = setInterval(() => this.updateScore(), 100);
         // console.log(this.config);
 
         // add background image
@@ -215,14 +222,19 @@ export default class extends Phaser.Scene {
         let spikePosition = 0;
         let side = SPIKE_TO_LEFT_SIDE;
 
+        if (this.lastGroupSpikePosition === side) {
+            side = SPIKE_TO_RIGHT_SIDE;
+        }
+
         // loop spikes for both sides
         for (const spikeIndex in spikesArray) {
-            spikePosition += this.config.tileSize;
+            spikePosition += this.config.spaceBetweenSpikes;
             if (spikesArray[spikeIndex] === 0) {
                 continue;
             }
 
             let spike;
+            const originalSide = side;
             if (side === SPIKE_TO_LEFT_SIDE) {
                 spike = this.make.sprite({
                     ...spikeConfig,
@@ -247,14 +259,21 @@ export default class extends Phaser.Scene {
                 spike.body.onWorldBounds = true;
                 spike.body.setCollideWorldBounds(true);
                 spike.setName('triggerSpikes');
+                this.lastGroupSpikePosition = originalSide;
             }
         }
     }
 
     gameOver = (hero, foe) => {
         console.log('game over!');
-        // alert('GAME OVER!');
-        this.scene.restart();
+        clearInterval(this.scoring);
+        // shake the camera
+        this.cameras.main.shake(500);
+
+        // restart game
+        this.time.delayedCall(500, () => {
+            this.scene.restart();
+        });
     };
 
     moveHero = () => {
@@ -265,5 +284,11 @@ export default class extends Phaser.Scene {
         } else {
             this.hero.setVelocityX(this.jumpSpeed);
         }
+    }
+
+    updateScore = () => {
+        // TODO
+        this.score += 1;
+        this.scoreText.setText(`${this.score}`.padStart(8, '0'));
     }
 }
