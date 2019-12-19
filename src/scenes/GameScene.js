@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser';
-import { generateRandomSpikePositions } from '../utils';
+import { generateRandomPositionsArray } from '../utils';
+import { SPIKE_TO_LEFT_SIDE, SPIKE_TO_RIGHT_SIDE } from '../constants';
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -13,6 +14,7 @@ export default class extends Phaser.Scene {
         this.speed = 100;
         this.jumpSpeed = 800;
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
+        this.input.on('pointerdown', () => this.moveHero());
 
         this.config = {
             tileSize: 16,
@@ -31,8 +33,10 @@ export default class extends Phaser.Scene {
 
     create() {
         console.log(this.config);
-        // console.log(generateRandomSpikePositions(20));
-        // add background image
+        /*
+         * console.log(generateRandomSpikePositions(20));
+         * add background image
+         */
         this.add.image(0, 0, 'background').setY(100);
 
         // add hero sprites and physics
@@ -42,9 +46,12 @@ export default class extends Phaser.Scene {
         this.hero.body.width = 20;
         console.log(this.hero.body);
 
-        // add blocks physics and groups
-        // TODO
+        /*
+         * add blocks physics and groups
+         * TODO
+         */
         this.blocksGroup = this.physics.add.group();
+        this.spikesGroup = this.physics.add.group();
         const height = this.config.chunkSize;
         let y = -height;
         for (let i = 0; i < 4; i++) {
@@ -102,67 +109,42 @@ export default class extends Phaser.Scene {
         };
 
         // MEGA TODO
-        const spikesArray = generateRandomSpikePositions(20);
+        const spikesArray = generateRandomPositionsArray(10);
         let spikePosition = 0;
+        let side = SPIKE_TO_LEFT_SIDE;
 
-        // loop spikes for the left size
-        for (const spikeBlock of spikesArray.array1) {
+        // loop spikes for both sides
+        for (const spikeBlock of spikesArray) {
             spikePosition += this.config.tileSize;
             if (spikeBlock === 0) {
                 continue;
             }
 
-            const spikeLeft = this.make.sprite({
-                ...spikeConfig,
-                y: spikePosition,
-            }).setName('spike');
-
-            this.blocksGroup.add(spikeLeft);
-            spikeLeft.body.setOffset(-10, -10).setImmovable();
-        }
-
-        // loop spikes for the right size
-        spikePosition = 0;
-        for (const spikeBlock of spikesArray.array2) {
-            spikePosition += this.config.tileSize;
-            if (spikeBlock === 0) {
-                continue;
+            let spike;
+            if (side === SPIKE_TO_LEFT_SIDE) {
+                spike = this.make.sprite({
+                    ...spikeConfig,
+                    y: spikePosition,
+                });
+                this.spikesGroup.add(spike);
+                spike.body.setOffset(-10, -10).setImmovable();
+                side = SPIKE_TO_RIGHT_SIDE;
+            } else {
+                spike = this.make.sprite({
+                    ...spikeConfig,
+                    y: spikePosition,
+                    x: 123,
+                    flipY: true,
+                });
+                this.spikesGroup.add(spike);
+                spike.body.setOffset(3, -10).setImmovable();
+                side = SPIKE_TO_LEFT_SIDE;
             }
-
-            const spikeRight = this.make.sprite({
-                ...spikeConfig,
-                y: spikePosition,
-                x: 123,
-                flipY: true,
-            }).setName('spike');
-
-            this.blocksGroup.add(spikeRight);
-            spikeRight.body.setOffset(3, -10).setImmovable();
-
-            spikePosition += this.config.tileSize;
         }
-
-        // for (let i = 0; i < 10; i++) {
-        //     y = spikeConfig.y * Math.random() * 100;
-        //     const spikeLeft = this.make.sprite({
-        //         ...spikeConfig,
-        //         y,
-        //     }).setName('spike');
-        //     const spikeRight = this.make.sprite({
-        //         ...spikeConfig,
-        //         x: 123,
-        //         y: y + 30 * Math.random(),
-        //         flipY: true,
-        //     }).setName('spike');
-        //
-        //     this.blocksGroup.add(spikeLeft);
-        //     this.blocksGroup.add(spikeRight);
-        //     spikeLeft.body.setOffset(-10, -10).setImmovable();
-        //     spikeRight.body.setOffset(3, -10).setImmovable();
-        // }
 
         // set group speed
         this.blocksGroup.setVelocity(0, this.speed);
+        this.spikesGroup.setVelocity(0, this.speed);
 
         // creates hero animation
         this.anims.create({
@@ -187,26 +169,17 @@ export default class extends Phaser.Scene {
         this.hero.anims.play('walking');
 
         // set collision
-        this.physics.add.collider(this.hero, this.blocksGroup, (hero, foe) => {
-            if (foe.name === 'spike') {
-                console.log('game over!');
-                this.scene.restart();
-            }
+        this.physics.add.collider(this.hero, this.blocksGroup);
+        this.physics.add.collider(this.hero, this.spikesGroup, (hero, foe) => {
+            console.log('game over!');
+            this.scene.restart();
         });
     }
 
     update() {
         // hero moving commands
         if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
-            this.hero.anims.play('jumping');
-
-            if (!this.hero.flipX) {
-                this.hero.setVelocityX(-this.jumpSpeed);
-            } else {
-                this.hero.setVelocityX(this.jumpSpeed);
-            }
-
-            // this.hero.flipX = !this.hero.flipX;
+            this.moveHero();
         }
 
         if (this.hero.x < this.config.tileSize) {
@@ -228,6 +201,16 @@ export default class extends Phaser.Scene {
             if (blockChunk.y - 320 >= 640) {
                 blockChunk.y = -(this.config.chunkSize / 2);
             }
+        }
+    }
+
+    moveHero = () => {
+        this.hero.anims.play('jumping');
+
+        if (!this.hero.flipX) {
+            this.hero.setVelocityX(-this.jumpSpeed);
+        } else {
+            this.hero.setVelocityX(this.jumpSpeed);
         }
     }
 }
