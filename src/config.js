@@ -4,7 +4,12 @@ export default {
     type: Phaser.AUTO,
     parent: 'content',
     width: 150,
-    height: 640,
+    height: 270,
+    scale: {
+        mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    autoRound: false,
     localStorageName: 'phaseres6webpack',
     pixelArt: true,
     physics: {

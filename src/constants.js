@@ -7,3 +7,5 @@ export const MAIN_SPIKES_GROUP = 0;
 export const SECONDARY_SPIKES_GROUP = 1;
 
 export const TERTIARY_SPIKES_GROUP = 2;
+
+export const QUATERNARY_SPIKES_GROUP = 3;
