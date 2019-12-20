@@ -241,7 +241,7 @@ export default class extends Phaser.Scene {
                     y: spikePosition,
                 });
                 group.add(spike);
-                spike.body.setOffset(-10, -10).setImmovable();
+                spike.body.setOffset(-10, -6).setImmovable();
                 side = SPIKE_TO_RIGHT_SIDE;
             } else {
                 spike = this.make.sprite({
@@ -251,10 +251,11 @@ export default class extends Phaser.Scene {
                     flipY: true,
                 });
                 group.add(spike);
-                spike.body.setOffset(3, -10).setImmovable();
+                spike.body.setOffset(3, -6).setImmovable();
                 side = SPIKE_TO_LEFT_SIDE;
             }
 
+            spike.body.height = 6; // this is actually the width
             if (Number(spikeIndex) + 1 === spikesArray.length) {
                 spike.body.onWorldBounds = true;
                 spike.body.setCollideWorldBounds(true);
