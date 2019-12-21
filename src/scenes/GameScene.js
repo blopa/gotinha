@@ -329,6 +329,8 @@ export default class extends Phaser.Scene {
 
         // console.log('game over!');
 
+        this.hero.anims.stop();
+        this.hero.setFrame('drop_01');
         this.isGameOver = true;
         this.scoreText.destroy();
         this.input.on('pointerdown', () => null);
