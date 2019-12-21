@@ -30,6 +30,8 @@ export default class extends Phaser.Scene {
         this.scoring = null;
         this.hasGameStarted = false;
         this.isGameOver = false;
+        this.playSoundeffects = true;
+        this.playSoundtrack = true;
         this.doneIncreasingSpikeSpawningSpeed = false;
 
         this.config = {
@@ -55,9 +57,21 @@ export default class extends Phaser.Scene {
     }
 
     create() {
+        if (this.playSoundtrack) {
+            this.sound.play('soundtrack', {
+                loop: -1,
+                volume: 0.35,
+            });
+        }
+
         // add background image
         this.add.image(0, 0, 'background').setOrigin(0, 0);
         this.tapIcon = this.add.image(this.game.config.width / 2, this.game.config.height - 60, 'tap');
+        /*
+         * TODO
+         * this.soundeffectsOnOff = this.add.image(30, 30, 'audio', 'no_audio').setScale(0.3);
+         * this.soundtrackOnOff = this.add.image(30, 60, 'audio', 'no_audio').setScale(0.3);
+         */
         this.gotinhaLogo = this.add.image(this.game.config.width / 2, 100, 'gotinha')
             .setScale(0.50)
             .setDepth(999);
@@ -380,7 +394,9 @@ export default class extends Phaser.Scene {
         // console.log('game over!');
 
         // play gameover sound
-        this.sound.play('gameover');
+        if (this.playSoundeffects) {
+            this.sound.play('gameover');
+        }
 
         // shake the camera
         this.cameras.main.shake(500);
@@ -411,7 +427,9 @@ export default class extends Phaser.Scene {
         this.hero.anims.play('jumping');
 
         // play jump sound
-        this.sound.play('jump');
+        if (this.playSoundeffects) {
+            this.sound.play('jump');
+        }
         // console.log(this.hero.scale);
 
         if (this.hero.scale === 1) {
@@ -550,7 +568,9 @@ export default class extends Phaser.Scene {
             this.score += crystal.name * 25;
 
             // play crystal acquired sound
-            this.sound.play('crystal');
+            if (this.playSoundeffects) {
+                this.sound.play('crystal', { volume: 0.4 });
+            }
             crystal.destroy();
         }
     }
