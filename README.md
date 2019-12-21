@@ -1,71 +1,27 @@
-# Phaser + ES6 + Webpack.
-#### A bootstrap project to create games with Phaser + ES6 + Webpack.
-
-![Phaser+ES6+Webpack](https://raw.githubusercontent.com/lean/phaser-es6-webpack/master/assets/images/phaser-es6-webpack.jpg)
-
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+# phaser3-cordova
 
 
-## Features
-- ESLINT with JavaScript Standard Style configuration
-- Next generation of Javascript
-- Browsers are automatically updated as you change project files
-- Webpack ready
-- WebFont Loader
+> **References**
 
-## Typescript 
-If you need typescript support checkout the ```typescript``` branch. Thanks to @MatsMaker
+- Signing App - https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#signing-an-app
 
-# Setup
-To use this bootstrap you’ll need to install a few things before you have a working copy of the project.
+- Add Platform - https://cordova.apache.org/docs/en/latest/guide/cli/index.html#add-platforms
 
-## 1. Clone this repo:
-
-Navigate into your workspace directory.
-
-Run:
-
-```git clone https://github.com/lean/phaser-es6-webpack.git```
-
-## 2. Install node.js and npm:
-
-https://nodejs.org/en/
+- Build Project - https://cordova.apache.org/docs/en/latest/guide/cli/index.html#build-the-app
 
 
-## 3. Install dependencies (optionally you could install [yarn](https://yarnpkg.com/)):
+> **Flow**
 
-Navigate to the cloned repo’s directory.
+- File of game in *phaser_project* directory
 
-Run:
+- Read [README](https://github.com/ReydVires/phaser3-cordova/blob/master/phaser_project/README.md) in *phaser_project* directory for installation **Phaser 3**
 
-```npm install``` 
+- Build result from phaser in *www/build/* directory
 
-or if you choose yarn, just run ```yarn```
+- You may change (manually setting) any *index.html* code properly
 
-## 4. Run the development server:
+- All assets that used in game need also to be in *www/assets/* directory
 
-Run:
+- To bulid the apk, use `cordova build android` (for detail, see **References**)
 
-```npm run dev```
-
-This will run a server so you can run the game in a browser.
-
-Open your browser and enter localhost:3000 into the address bar.
-
-Also this will start a watch process, so you can change the source and the process will recompile and refresh the browser
-
-
-## Build for deployment:
-
-Run:
-
-```npm run deploy```
-
-This will optimize and minimize the compiled bundle.
-
-## Credits
-Big thanks to this great repos:
-
-https://github.com/belohlavek/phaser-es6-boilerplate
-
-https://github.com/cstuncsik/phaser-es6-demo
+- If *PATH* of Android requirement corrected, it will produce apk debug under *platforms/android/app/build/outputs/apk/debug/* directory

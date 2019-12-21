@@ -29,4 +29,7 @@ docs
 .stylelintcache
 .idea
 .vscode/
-dist
+
+platforms/android/app/build/outputs/apk/debug/*
+www
+run-note.txt
