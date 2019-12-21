@@ -18,8 +18,6 @@ export default class extends Phaser.Scene {
     init() {
         // TODO
         this.hero = {};
-        this.speed = 100;
-        this.jumpSpeed = 800;
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
         this.input.on('pointerdown', () => this.moveHero());
         this.lastUsedGroup = MAIN_SPIKES_GROUP;
@@ -33,6 +31,8 @@ export default class extends Phaser.Scene {
             screenSizeDifference: 370,
             spikeQuantity: 4,
             spaceBetweenSpikes: 12,
+            jumpSpeed: 800,
+            speed: 100,
         };
 
         this.config = {
@@ -131,9 +131,9 @@ export default class extends Phaser.Scene {
         this.generateSpikes(spikeConfig, this.mainSpikeGroup, this.config.spikeQuantity);
 
         // set group speed
-        this.blocksGroup.setVelocity(0, this.speed);
-        this.mainSpikeGroup.setVelocity(0, this.speed);
-        // this.secondarySpikeGroup.setVelocity(0, this.speed);
+        this.blocksGroup.setVelocity(0, this.config.speed);
+        this.mainSpikeGroup.setVelocity(0, this.config.speed);
+        // this.secondarySpikeGroup.setVelocity(0, this.config.speed);
 
         // creates hero animation
         this.anims.create({
@@ -164,38 +164,40 @@ export default class extends Phaser.Scene {
         this.physics.add.collider(this.hero, this.tertiarySpikeGroup, this.gameOver);
         this.physics.world.on('worldbounds', (body, top, bottom, left, right) => {
             if (top) {
-                body.setVelocity(0, this.speed);
+                body.setVelocity(0, this.config.speed);
             } else if (bottom && body.gameObject.name === 'triggerSpikes') {
                 body.gameObject.destroy();
-                // console.log('generate new spike!!');
-                // console.log('current group:', this.lastUsedGroup);
-                // alert(`group: ${this.lastUsedGroup}`);
+                /*
+                 * console.log('generate new spike!!');
+                 * console.log('current group:', this.lastUsedGroup);
+                 * alert(`group: ${this.lastUsedGroup}`);
+                 */
                 switch (this.lastUsedGroup) {
                     case QUATERNARY_SPIKES_GROUP: {
                         this.lastUsedGroup = MAIN_SPIKES_GROUP;
                         this.generateSpikes(spikeConfig, this.mainSpikeGroup, this.config.spikeQuantity);
-                        this.mainSpikeGroup.setVelocity(0, this.speed);
+                        this.mainSpikeGroup.setVelocity(0, this.config.speed);
                         this.secondarySpikeGroup.clear(true, true);
                         break;
                     }
                     case TERTIARY_SPIKES_GROUP: {
                         this.lastUsedGroup = QUATERNARY_SPIKES_GROUP;
                         this.generateSpikes(spikeConfig, this.quaternarySpikeGroup, this.config.spikeQuantity);
-                        this.quaternarySpikeGroup.setVelocity(0, this.speed);
+                        this.quaternarySpikeGroup.setVelocity(0, this.config.speed);
                         this.mainSpikeGroup.clear(true, true);
                         break;
                     }
                     case SECONDARY_SPIKES_GROUP: {
                         this.lastUsedGroup = TERTIARY_SPIKES_GROUP;
                         this.generateSpikes(spikeConfig, this.tertiarySpikeGroup, this.config.spikeQuantity);
-                        this.tertiarySpikeGroup.setVelocity(0, this.speed);
+                        this.tertiarySpikeGroup.setVelocity(0, this.config.speed);
                         this.quaternarySpikeGroup.clear(true, true);
                         break;
                     }
                     case MAIN_SPIKES_GROUP: {
                         this.lastUsedGroup = SECONDARY_SPIKES_GROUP;
                         this.generateSpikes(spikeConfig, this.secondarySpikeGroup, this.config.spikeQuantity);
-                        this.secondarySpikeGroup.setVelocity(0, this.speed);
+                        this.secondarySpikeGroup.setVelocity(0, this.config.speed);
                         this.tertiarySpikeGroup.clear(true, true);
                         break;
                     }
@@ -258,8 +260,10 @@ export default class extends Phaser.Scene {
                 continue;
             }
 
-            // console.log('position', spikePosition);
-            // console.log('side', side);
+            /*
+             * console.log('position', spikePosition);
+             * console.log('side', side);
+             */
 
             let spike;
             const originalSide = side;
@@ -295,27 +299,40 @@ export default class extends Phaser.Scene {
             }
         }
 
-        // group.add(this.add.text(35, spikePosition, `A: ${this.lastUsedGroup}`).setDepth(999));
-        // const text = this.add.text(-10, spikePosition, '-----------------------------------------------------------')
-        //     .setDepth(999);
-        // group.add(text);
-        // text.body.setImmovable();
+        /*
+         * group.add(this.add.text(35, spikePosition, `A: ${this.lastUsedGroup}`).setDepth(999));
+         * const text = this.add.text(-10, spikePosition, '-----------------------------------------------------------')
+         *     .setDepth(999);
+         * group.add(text);
+         * text.body.setImmovable();
+         */
     }
 
     gameOver = (hero, foe) => {
-        if (foe.name === 'triggerSpikes') {
+        if (foe.name === 'triggerSpikes' || this.isGameOver) {
             return;
         }
 
         // console.log('game over!');
+
         this.isGameOver = true;
+        this.input.on('pointerdown', () => null);
         clearInterval(this.scoring);
+        this.blocksGroup.setVelocity(0, 0);
+        this.mainSpikeGroup.setVelocity(0, 0);
+        this.secondarySpikeGroup.setVelocity(0, 0);
+        this.tertiarySpikeGroup.setVelocity(0, 0);
+        this.quaternarySpikeGroup.setVelocity(0, 0);
+        const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 50);
+        const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
+        graphics.fillRectShape(messageBox);
+        this.add.text(35, 110, `Score:\n${this.getScore()}`).setDepth(999);
         // shake the camera
         this.cameras.main.shake(500);
 
         // restart game
         this.time.delayedCall(500, () => {
-            this.scene.restart();
+            this.input.on('pointerdown', () => this.scene.restart());
         });
     };
 
@@ -323,15 +340,17 @@ export default class extends Phaser.Scene {
         this.hero.anims.play('jumping');
 
         if (!this.hero.flipX) {
-            this.hero.setVelocityX(-this.jumpSpeed);
+            this.hero.setVelocityX(-this.config.jumpSpeed);
         } else {
-            this.hero.setVelocityX(this.jumpSpeed);
+            this.hero.setVelocityX(this.config.jumpSpeed);
         }
     }
 
     updateScore = () => {
         // TODO
         this.score += 1;
-        this.scoreText.setText(`${this.score}`.padStart(8, '0'));
+        this.scoreText.setText(this.getScore());
     }
+
+    getScore = () => `${this.score}`.padStart(8, '0')
 }

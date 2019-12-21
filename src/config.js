@@ -10,16 +10,18 @@ export default {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     autoRound: false,
-    localStorageName: 'phaseres6webpack',
+    localStorageName: 'phasergamegotinha',
     pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {
             enableBody: true,
-            debug: true,
-            // gravity: {
-            //     y: 500,
-            // },
+            /*
+             * debug: true,
+             * gravity: {
+             *     y: 500,
+             * },
+             */
         },
     },
 };
