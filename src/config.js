@@ -17,9 +17,11 @@ export default {
         arcade: {
             enableBody: true,
             debug: false,
-            // gravity: {
-            //     y: 500,
-            // },
+            /*
+             * gravity: {
+             *     y: 500,
+             * },
+             */
         },
     },
 };

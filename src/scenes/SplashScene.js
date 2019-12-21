@@ -14,6 +14,7 @@ export default class extends Phaser.Scene {
         // this.load.image('blocks', 'assets/images/blocks.png');
         this.load.image('background', 'assets/images/background.png');
         this.load.image('tap', 'assets/images/tap.png');
+        this.load.image('gotinha', 'assets/images/gotinha.png');
         // this.load.image('tiles', 'assets/images/tiles.png');
         this.load.image('tile', 'assets/images/tile.png');
         this.load.image('spike', 'assets/images/spike.png');

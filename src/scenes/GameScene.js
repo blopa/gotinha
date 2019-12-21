@@ -18,22 +18,17 @@ export default class extends Phaser.Scene {
     init() {
         // TODO
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
-        this.input.on('pointerdown', () => {
-            this.tapCount += 1;
-            if (this.tapCount === 4) {
-                this.tapIcon.destroy();
-            }
+        this.input.once('pointerdown', this.handleStartGame);
 
-            this.moveHero();
-        });
-
-        this.hero = {};
-        this.tapIcon = {};
+        this.hero = null;
+        this.tapIcon = null;
+        this.createdByText = null;
         this.lastUsedGroup = MAIN_SPIKES_GROUP;
         this.lastGroupSpikePosition = null;
         this.score = 0;
         this.tapCount = 0;
         this.scoring = null;
+        this.hasGameStarted = false;
         this.isGameOver = false;
         this.doneIncreasingSpikeSpawningSpeed = false;
 
@@ -63,10 +58,13 @@ export default class extends Phaser.Scene {
         // add background image
         this.add.image(0, 0, 'background').setOrigin(0, 0);
         this.tapIcon = this.add.image(this.game.config.width / 2, this.game.config.height - 60, 'tap');
-
-        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
-        this.scoring = setInterval(() => this.updateScore(), 300);
+        this.gotinhaLogo = this.add.image(this.game.config.width / 2, 100, 'gotinha')
+            .setScale(0.50)
+            .setDepth(999);
         // console.log(this.config);
+        this.createdByText = this.add.text(30, this.game.config.height - 150, ' Created by\nPablo Pirata', {
+            fontSize: '13px',
+        }).setDepth(999);
 
         // this.add.existing(this.createCrystal(50, 50, 1));
 
@@ -92,52 +90,11 @@ export default class extends Phaser.Scene {
         this.secondaryCrystalGroup = this.physics.add.group();
         this.tertiaryCrystalGroup = this.physics.add.group();
         this.quaternaryCrystalGroup = this.physics.add.group();
-
-        const height = this.config.chunkSize;
-        let y = -(height + this.config.screenSizeDifference);
-        for (let i = 0; i < 4; i++) {
-            const leftBlock = this.make.tileSprite({
-                x: 0,
-                y,
-                height,
-                width: this.config.tileSize,
-                // angle: 90,
-                key: 'tile',
-                origin: {
-                    x: 0,
-                    y: 0,
-                },
-            });
-            const rightBlock = this.make.tileSprite({
-                x: this.config.heroXPosition,
-                y,
-                height,
-                width: this.config.tileSize,
-                // angle: 90,
-                key: 'tile',
-                flipX: true,
-                origin: {
-                    x: 0,
-                    y: 0,
-                },
-            });
-            this.blocksGroup.add(leftBlock);
-            this.blocksGroup.add(rightBlock);
-            leftBlock.body.setImmovable();
-            rightBlock.body.setImmovable();
-            y += height - this.config.tileSize;
-        }
         // console.log(this.blocksGroup);
 
+        this.generateBlockChunks(this.blocksGroup);
+
         // console.log(this.hero);
-
-        // generate spikes
-        this.generateSpikes(this.mainSpikeGroup, this.config.spikeQuantity);
-
-        // set group speed
-        this.blocksGroup.setVelocity(0, this.config.speed);
-        this.mainSpikeGroup.setVelocity(0, this.config.speed);
-        // this.secondarySpikeGroup.setVelocity(0, this.config.speed);
 
         // creates hero animation
         this.anims.create({
@@ -163,19 +120,6 @@ export default class extends Phaser.Scene {
 
         // set collision
         this.physics.add.collider(this.hero, this.blocksGroup);
-        this.physics.add.collider(this.hero, this.mainSpikeGroup, this.gameOver);
-        this.physics.add.collider(this.hero, this.secondarySpikeGroup, this.gameOver);
-        this.physics.add.collider(this.hero, this.tertiarySpikeGroup, this.gameOver);
-        this.physics.add.collider(this.hero, this.quaternarySpikeGroup, this.gameOver);
-
-        // set crystal collision
-        this.physics.add.collider(this.hero, this.mainCrystalGroup, this.crystalAcquired);
-        this.physics.add.collider(this.hero, this.secondaryCrystalGroup, this.crystalAcquired);
-        this.physics.add.collider(this.hero, this.tertiaryCrystalGroup, this.crystalAcquired);
-        this.physics.add.collider(this.hero, this.quaternaryCrystalGroup, this.crystalAcquired);
-        this.physics.world.on('worldbounds', this.handleSpikesAndCrystalsCreation);
-
-        // console.log(this.cameras.main);
     }
 
     update() {
@@ -218,6 +162,84 @@ export default class extends Phaser.Scene {
                 blockChunk.y = -(this.config.chunkSize / 2 + this.config.screenSizeDifference);
             }
         }
+    }
+
+    handleStartGame = () => {
+        this.startGame();
+        this.tapIcon.destroy();
+        this.createdByText.destroy();
+        this.gotinhaLogo.destroy();
+
+        this.moveHero();
+        this.input.on('pointerdown', this.moveHero);
+    };
+
+    startGame = () => {
+        // add score text and score count
+        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
+        this.scoring = setInterval(this.updateScore, 300);
+
+        // generate spikes
+        this.generateSpikes(this.mainSpikeGroup, this.config.spikeQuantity);
+
+        // set spikes collision
+        this.mainSpikeGroup.setVelocity(0, this.config.speed);
+        this.physics.add.collider(this.hero, this.mainSpikeGroup, this.gameOver);
+        this.physics.add.collider(this.hero, this.secondarySpikeGroup, this.gameOver);
+        this.physics.add.collider(this.hero, this.tertiarySpikeGroup, this.gameOver);
+        this.physics.add.collider(this.hero, this.quaternarySpikeGroup, this.gameOver);
+
+        // set crystal collision
+        this.physics.add.collider(this.hero, this.mainCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.secondaryCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.tertiaryCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.quaternaryCrystalGroup, this.crystalAcquired);
+        this.physics.world.on('worldbounds', this.handleSpikesAndCrystalsCreation);
+
+        // set game as started
+        this.hasGameStarted = true;
+    }
+
+    generateBlockChunks = (group) => {
+        const height = this.config.chunkSize;
+        let y = -(height + this.config.screenSizeDifference);
+        for (let i = 0; i < 4; i++) {
+            const leftBlock = this.make.tileSprite({
+                x: 0,
+                y,
+                height,
+                width: this.config.tileSize,
+                // angle: 90,
+                key: 'tile',
+                origin: {
+                    x: 0,
+                    y: 0,
+                },
+            });
+
+            const rightBlock = this.make.tileSprite({
+                x: this.config.heroXPosition,
+                y,
+                height,
+                width: this.config.tileSize,
+                // angle: 90,
+                key: 'tile',
+                flipX: true,
+                origin: {
+                    x: 0,
+                    y: 0,
+                },
+            });
+
+            group.add(leftBlock);
+            group.add(rightBlock);
+            leftBlock.body.setImmovable();
+            rightBlock.body.setImmovable();
+            y += height - this.config.tileSize;
+        }
+
+        // set group speed
+        group.setVelocity(0, this.config.speed);
     }
 
     handleSpikesAndCrystalsCreation = (body, top, bottom, left, right) => {
@@ -355,23 +377,25 @@ export default class extends Phaser.Scene {
         if (foe.name === 'triggerSpikes' || this.isGameOver) {
             return;
         }
-
         // console.log('game over!');
+
+        // shake the camera
+        this.cameras.main.shake(500);
 
         this.hero.anims.stop();
         this.hero.setFrame('drop_01');
         this.isGameOver = true;
         this.scoreText.destroy();
-        this.input.on('pointerdown', () => null);
+
+        this.input.removeAllListeners();
         clearInterval(this.scoring);
         this.setVelocityToAllGroups(0);
+
         const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 80);
         const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
         graphics.fillRectShape(messageBox);
         this.add.text(35, 110, `Score:\n${this.getScore()}`).setDepth(999);
         this.add.text(35, 145, `Tapped:\n${this.tapCount} times`).setDepth(999);
-        // shake the camera
-        this.cameras.main.shake(500);
 
         // restart game
         this.time.delayedCall(500, () => {
@@ -380,6 +404,7 @@ export default class extends Phaser.Scene {
     };
 
     moveHero = () => {
+        this.tapCount += 1;
         this.hero.anims.play('jumping');
         // console.log(this.hero.scale);
 
@@ -509,8 +534,8 @@ export default class extends Phaser.Scene {
                 crystal.setFlipY(false);
             }
         });
-        crystal.anims.play(`${frameName}_flipping_normal`);
 
+        crystal.anims.play(`${frameName}_flipping_normal`);
         return crystal;
     }
 
