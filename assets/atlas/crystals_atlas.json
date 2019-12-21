@@ -1,0 +1,108 @@
+{
+    "frames": [
+        {
+            "filename": "crystals_01",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 16,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_01_small",
+            "frame": {
+                "x": 16,
+                "y": 0,
+                "w": 8,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_02",
+            "frame": {
+                "x": 24,
+                "y": 0,
+                "w": 16,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_02_small",
+            "frame": {
+                "x": 40,
+                "y": 0,
+                "w": 8,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_03",
+            "frame": {
+                "x": 0,
+                "y": 16,
+                "w": 16,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_03_small",
+            "frame": {
+                "x": 16,
+                "y": 16,
+                "w": 8,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_04",
+            "frame": {
+                "x": 24,
+                "y": 16,
+                "w": 16,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystals_04_small",
+            "frame": {
+                "x": 40,
+                "y": 16,
+                "w": 8,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}

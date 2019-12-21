@@ -40,6 +40,7 @@ export default class extends Phaser.Scene {
         this.config = {
             ...this.config,
             heroXPosition: this.game.config.width - this.config.tileSize,
+            heroYPosition: this.game.config.height - 60,
             chunkSize: this.config.tileSize * 20,
         };
     }
@@ -57,12 +58,12 @@ export default class extends Phaser.Scene {
         this.add.image(0, 0, 'background').setOrigin(0, 0);
 
         // add hero sprites and physics
-        this.hero = this.physics.add.sprite(this.config.heroXPosition, this.game.config.height - 40, 'hero', 'drop_10')
+        this.hero = this.physics.add.sprite(this.config.heroXPosition, this.config.heroYPosition, 'hero', 'drop_03')
             .setOrigin(0, 0)
             .setImmovable();
-        this.hero.body.width = 20; // actually height
-        this.hero.body.height = 13; // actually width
-        this.hero.body.setOffset(0, 1);
+        this.hero.body.width = 30; // actually height
+        this.hero.body.height = 26; // actually width
+        this.hero.body.setOffset(0, 2);
         this.physics.world.setBoundsCollision();
         // console.log(this.hero.body);
 
@@ -137,9 +138,9 @@ export default class extends Phaser.Scene {
         this.anims.create({
             key: 'walking',
             frames: this.anims.generateFrameNames('hero', {
-                frames: ['drop_12', 'drop_09', 'drop_10'],
+                frames: ['drop_01', 'drop_02', 'drop_03'],
             }),
-            frameRate: 6,
+            frameRate: 8,
             yoyo: true,
             repeat: -1,
         });
@@ -147,9 +148,9 @@ export default class extends Phaser.Scene {
         this.anims.create({
             key: 'jumping',
             frames: this.anims.generateFrameNames('hero', {
-                frames: ['drop_06', 'drop_07', 'drop_08'],
+                frames: ['drop_jump_01'],
             }),
-            frameRate: 6,
+            frameRate: 1,
         });
 
         // plays animation
@@ -222,16 +223,22 @@ export default class extends Phaser.Scene {
         }
 
         if (this.hero.x < this.config.tileSize) {
+            // left side
             this.hero.setVelocityX(0);
             this.hero.x = this.config.tileSize;
-            this.hero.flipX = true;
+            this.hero.y = this.hero.y + 15;
+            this.hero.body.setOffset(30, 28);
+            this.hero.setScale(-1);
             this.hero.anims.play('walking');
         }
 
         if (this.hero.x > this.config.heroXPosition) {
+            // right side
             this.hero.setVelocityX(0);
             this.hero.x = this.config.heroXPosition;
-            this.hero.flipX = false;
+            this.hero.y = this.config.heroYPosition;
+            this.hero.body.setOffset(0, 2);
+            this.hero.setScale(1);
             this.hero.anims.play('walking');
         }
 
@@ -340,8 +347,9 @@ export default class extends Phaser.Scene {
 
     moveHero = () => {
         this.hero.anims.play('jumping');
+        console.log(this.hero.scale);
 
-        if (!this.hero.flipX) {
+        if (this.hero.scale === 1) {
             this.hero.setVelocityX(-this.config.jumpSpeed);
         } else {
             this.hero.setVelocityX(this.config.jumpSpeed);

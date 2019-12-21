@@ -16,7 +16,7 @@ export default class extends Phaser.Scene {
         // this.load.image('tiles', 'assets/images/tiles.png');
         this.load.image('tile', 'assets/images/tile.png');
         this.load.image('spike', 'assets/images/spike.png');
-        this.load.atlas('hero', 'assets/atlas/drops.png', 'assets/atlas/drops_atlas.json');
+        this.load.atlas('hero', 'assets/atlas/drop.png', 'assets/atlas/drop_atlas.json');
     }
 
     create() {
