@@ -140,7 +140,7 @@ export default class extends Phaser.Scene {
             frames: this.anims.generateFrameNames('hero', {
                 frames: ['drop_01', 'drop_02', 'drop_03'],
             }),
-            frameRate: 8,
+            frameRate: 6,
             yoyo: true,
             repeat: -1,
         });
@@ -226,9 +226,10 @@ export default class extends Phaser.Scene {
             // left side
             this.hero.setVelocityX(0);
             this.hero.x = this.config.tileSize;
-            this.hero.y = this.hero.y + 15;
-            this.hero.body.setOffset(30, 28);
+            // this.hero.y = this.hero.y + 15;
+            this.hero.body.setOffset(30, -2);
             this.hero.setScale(-1);
+            this.hero.setFlipY(true);
             this.hero.anims.play('walking');
         }
 
@@ -236,9 +237,10 @@ export default class extends Phaser.Scene {
             // right side
             this.hero.setVelocityX(0);
             this.hero.x = this.config.heroXPosition;
-            this.hero.y = this.config.heroYPosition;
+            // this.hero.y = this.config.heroYPosition;
             this.hero.body.setOffset(0, 2);
             this.hero.setScale(1);
+            this.hero.setFlipY(false);
             this.hero.anims.play('walking');
         }
 
