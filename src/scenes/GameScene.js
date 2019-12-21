@@ -369,7 +369,7 @@ export default class extends Phaser.Scene {
         const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
         graphics.fillRectShape(messageBox);
         this.add.text(35, 110, `Score:\n${this.getScore()}`).setDepth(999);
-        this.add.text(35, 140, `Tapped:\n${this.tapCount} times`).setDepth(999);
+        this.add.text(35, 145, `Tapped:\n${this.tapCount} times`).setDepth(999);
         // shake the camera
         this.cameras.main.shake(500);
 
