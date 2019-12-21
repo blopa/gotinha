@@ -28,6 +28,8 @@ docs
 .eslintcache
 .stylelintcache
 .idea
+.idea/*
+.idea/workspace.xml
 .vscode/
 
 platforms/android/app/build/outputs/apk/debug/*
