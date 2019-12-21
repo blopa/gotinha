@@ -163,7 +163,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var phaser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! phaser */ \"./node_modules/phaser/src/phaser.js\");\n/* harmony import */ var phaser__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(phaser__WEBPACK_IMPORTED_MODULE_0__);\n\n/* harmony default export */ __webpack_exports__[\"default\"] = ({\n  type: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.AUTO,\n  parent: 'content',\n  width: 150,\n  height: 270,\n  scale: {\n    mode: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.Scale.WIDTH_CONTROLS_HEIGHT,\n    autoCenter: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.Scale.CENTER_BOTH\n  },\n  autoRound: false,\n  localStorageName: 'phasergamegotinha',\n  pixelArt: true,\n  physics: {\n    default: 'arcade',\n    arcade: {\n      enableBody: true\n      /*\n       * debug: true,\n       * gravity: {\n       *     y: 500,\n       * },\n       */\n\n    }\n  }\n});\n\n//# sourceURL=webpack:///./src/config.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var phaser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! phaser */ \"./node_modules/phaser/src/phaser.js\");\n/* harmony import */ var phaser__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(phaser__WEBPACK_IMPORTED_MODULE_0__);\n\n/* harmony default export */ __webpack_exports__[\"default\"] = ({\n  type: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.AUTO,\n  parent: 'content',\n  width: 150,\n  height: 270,\n  scale: {\n    mode: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.Scale.HEIGHT_CONTROLS_WIDTH,\n    autoCenter: phaser__WEBPACK_IMPORTED_MODULE_0___default.a.Scale.CENTER_BOTH\n  },\n  autoRound: false,\n  localStorageName: 'phasergamegotinha',\n  pixelArt: true,\n  physics: {\n    default: 'arcade',\n    arcade: {\n      enableBody: true // debug: true,\n      // gravity: {\n      //     y: 500,\n      // },\n\n    }\n  }\n});\n\n//# sourceURL=webpack:///./src/config.js?");
 
 /***/ }),
 
@@ -246,7 +246,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("module.exports = __webpack_require__(/*! C:\\Users\\monte\\Documents\\Projects\\phaser-es6-webpack\\src\\main.js */\"./src/main.js\");\n\n\n//# sourceURL=webpack:///multi_./src/main.js?");
+eval("module.exports = __webpack_require__(/*! C:\\Users\\monte\\Documents\\Projects\\gotinha\\src\\main.js */\"./src/main.js\");\n\n\n//# sourceURL=webpack:///multi_./src/main.js?");
 
 /***/ })
 

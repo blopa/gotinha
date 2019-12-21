@@ -6,7 +6,7 @@ export default {
     width: 150,
     height: 270,
     scale: {
-        mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
+        mode: Phaser.Scale.HEIGHT_CONTROLS_WIDTH,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     autoRound: false,
@@ -16,12 +16,10 @@ export default {
         default: 'arcade',
         arcade: {
             enableBody: true,
-            /*
-             * debug: true,
-             * gravity: {
-             *     y: 500,
-             * },
-             */
+            // debug: true,
+            // gravity: {
+            //     y: 500,
+            // },
         },
     },
 };
