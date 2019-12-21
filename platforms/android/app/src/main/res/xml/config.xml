@@ -9,10 +9,10 @@
     </feature>
     <name>Gotinha</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        A simple game to challenge your friends for the best score.
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+        Pablo Pirata
     </author>
     <content src="index.html" />
     <access origin="*" />
