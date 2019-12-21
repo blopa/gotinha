@@ -20,6 +20,10 @@ export default class extends Phaser.Scene {
         this.load.image('spike', 'assets/images/spike.png');
         this.load.atlas('hero', 'assets/images/drop.png', 'assets/atlas/drop_atlas.json');
         this.load.atlas('crystals', 'assets/images/crystals.png', 'assets/atlas/crystals_atlas.json');
+        this.load.audio('soundtrack', 'assets/audio/soundtrack/soundtrack.ogg');
+        this.load.audio('crystal', 'assets/audio/sfx/crystal.ogg');
+        this.load.audio('gameover', 'assets/audio/sfx/gameover.ogg');
+        this.load.audio('jump', 'assets/audio/sfx/jump.ogg');
     }
 
     create() {

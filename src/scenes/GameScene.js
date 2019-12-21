@@ -379,6 +379,9 @@ export default class extends Phaser.Scene {
         }
         // console.log('game over!');
 
+        // play gameover sound
+        this.sound.play('gameover');
+
         // shake the camera
         this.cameras.main.shake(500);
 
@@ -406,6 +409,9 @@ export default class extends Phaser.Scene {
     moveHero = () => {
         this.tapCount += 1;
         this.hero.anims.play('jumping');
+
+        // play jump sound
+        this.sound.play('jump');
         // console.log(this.hero.scale);
 
         if (this.hero.scale === 1) {
@@ -542,6 +548,9 @@ export default class extends Phaser.Scene {
     crystalAcquired = (hero, crystal) => {
         if (crystal.texture.key === 'crystals') {
             this.score += crystal.name * 25;
+
+            // play crystal acquired sound
+            this.sound.play('crystal');
             crystal.destroy();
         }
     }
