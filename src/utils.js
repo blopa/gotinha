@@ -3,7 +3,7 @@ export const generateRandomPositionsArray = (quantity, factor = 0.2) => {
      * 1 - means there will be a spike there
      * 0 - means no spike
      */
-    const array = [getSpikeOrNot(factor), 0];
+    const array = [getSpikeOrNot(factor + 0.2), 0];
     for (let i = 0; i < quantity; i++) {
         array.push(0, getSpikeOrNot(factor), 0);
     }

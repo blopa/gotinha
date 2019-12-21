@@ -358,10 +358,16 @@ export default class extends Phaser.Scene {
 
     increaseDifficulty = () => {
         if (!this.doneIncreasingSpikeSpawningSpeed) {
-            if (this.score > 700) {
+            if (this.score > 2500) {
+                this.config.speed = 200;
+                this.doneIncreasingSpikeSpawningSpeed = true;
+            } else if (this.score > 1500) {
+                this.config.speed = 170;
+            } else if (this.score > 1000) {
+                this.config.speed = 150;
+            } else if (this.score > 700) {
                 this.config.spikeGenerationFactor = 0.4;
                 this.config.speed = 140;
-                this.doneIncreasingSpikeSpawningSpeed = true;
             } else if (this.score > 600) {
                 this.config.spikeGenerationFactor = 0.3;
                 this.config.speed = 130;
