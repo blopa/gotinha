@@ -1,7 +1,7 @@
 {
     "frames": [
         {
-            "filename": "crystals_01",
+            "filename": "crystal_01",
             "frame": {
                 "x": 0,
                 "y": 0,
@@ -9,12 +9,12 @@
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_01_small",
+            "filename": "crystal_01_flip_01",
             "frame": {
                 "x": 16,
                 "y": 0,
@@ -22,38 +22,64 @@
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_02",
+            "filename": "crystal_01_flip_02",
             "frame": {
                 "x": 24,
+                "y": 0,
+                "w": 3,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystal_02",
+            "frame": {
+                "x": 27,
                 "y": 0,
                 "w": 16,
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_02_small",
+            "filename": "crystal_02_flip_01",
             "frame": {
-                "x": 40,
+                "x": 43,
                 "y": 0,
                 "w": 8,
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_03",
+            "filename": "crystal_02_flip_02",
+            "frame": {
+                "x": 51,
+                "y": 0,
+                "w": 3,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystal_03",
             "frame": {
                 "x": 0,
                 "y": 16,
@@ -61,12 +87,12 @@
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_03_small",
+            "filename": "crystal_03_flip_01",
             "frame": {
                 "x": 16,
                 "y": 16,
@@ -74,33 +100,59 @@
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_04",
+            "filename": "crystal_03_flip_02",
             "frame": {
                 "x": 24,
+                "y": 16,
+                "w": 3,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystal_04",
+            "frame": {
+                "x": 27,
                 "y": 16,
                 "w": 16,
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
                 "y": 0
             }
         },
         {
-            "filename": "crystals_04_small",
+            "filename": "crystal_04_flip_01",
             "frame": {
-                "x": 40,
+                "x": 43,
                 "y": 16,
                 "w": 8,
                 "h": 16
             },
             "anchor": {
-                "x": 0,
+                "x": 0.5,
+                "y": 0
+            }
+        },
+        {
+            "filename": "crystal_04_flip_02",
+            "frame": {
+                "x": 51,
+                "y": 16,
+                "w": 3,
+                "h": 16
+            },
+            "anchor": {
+                "x": 0.5,
                 "y": 0
             }
         }

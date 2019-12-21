@@ -1,6 +1,6 @@
 /* globals __DEV__ */
 import Phaser from 'phaser';
-import { generateRandomPositionsArray } from '../utils';
+import { generateRandomCrystalPositionsArray, generateRandomSpikePositionsArray } from '../utils';
 import {
     MAIN_SPIKES_GROUP,
     SECONDARY_SPIKES_GROUP,
@@ -17,12 +17,22 @@ export default class extends Phaser.Scene {
 
     init() {
         // TODO
-        this.hero = {};
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
-        this.input.on('pointerdown', () => this.moveHero());
+        this.input.on('pointerdown', () => {
+            this.tapCount += 1;
+            if (this.tapCount === 4) {
+                this.tapIcon.destroy();
+            }
+
+            this.moveHero();
+        });
+
+        this.hero = {};
+        this.tapIcon = {};
         this.lastUsedGroup = MAIN_SPIKES_GROUP;
         this.lastGroupSpikePosition = null;
         this.score = 0;
+        this.tapCount = 0;
         this.scoring = null;
         this.isGameOver = false;
         this.doneIncreasingSpikeSpawningSpeed = false;
@@ -40,7 +50,7 @@ export default class extends Phaser.Scene {
         this.config = {
             ...this.config,
             heroXPosition: this.game.config.width - this.config.tileSize,
-            heroYPosition: this.game.config.height - 60,
+            heroYPosition: this.game.config.height - 110,
             chunkSize: this.config.tileSize * 20,
         };
     }
@@ -50,12 +60,15 @@ export default class extends Phaser.Scene {
     }
 
     create() {
-        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
-        this.scoring = setInterval(() => this.updateScore(), 100);
-        // console.log(this.config);
-
         // add background image
         this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.tapIcon = this.add.image(this.game.config.width / 2, this.game.config.height - 60, 'tap');
+
+        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
+        this.scoring = setInterval(() => this.updateScore(), 300);
+        // console.log(this.config);
+
+        // this.add.existing(this.createCrystal(50, 50, 1));
 
         // add hero sprites and physics
         this.hero = this.physics.add.sprite(this.config.heroXPosition, this.config.heroYPosition, 'hero', 'drop_03')
@@ -73,6 +86,13 @@ export default class extends Phaser.Scene {
         this.secondarySpikeGroup = this.physics.add.group();
         this.tertiarySpikeGroup = this.physics.add.group();
         this.quaternarySpikeGroup = this.physics.add.group();
+
+        // crystal groups
+        this.mainCrystalGroup = this.physics.add.group();
+        this.secondaryCrystalGroup = this.physics.add.group();
+        this.tertiaryCrystalGroup = this.physics.add.group();
+        this.quaternaryCrystalGroup = this.physics.add.group();
+
         const height = this.config.chunkSize;
         let y = -(height + this.config.screenSizeDifference);
         for (let i = 0; i < 4; i++) {
@@ -111,23 +131,8 @@ export default class extends Phaser.Scene {
 
         // console.log(this.hero);
 
-        // add spikes
-        const spikeConfig = {
-            height: 7,
-            width: 11,
-            x: 16,
-            y: 30,
-            // angle: 90,
-            key: 'spike',
-            // immovable: true,
-            origin: {
-                x: 0,
-                y: 0,
-            },
-        };
-
         // generate spikes
-        this.generateSpikes(spikeConfig, this.mainSpikeGroup, this.config.spikeQuantity);
+        this.generateSpikes(this.mainSpikeGroup, this.config.spikeQuantity);
 
         // set group speed
         this.blocksGroup.setVelocity(0, this.config.speed);
@@ -161,51 +166,14 @@ export default class extends Phaser.Scene {
         this.physics.add.collider(this.hero, this.mainSpikeGroup, this.gameOver);
         this.physics.add.collider(this.hero, this.secondarySpikeGroup, this.gameOver);
         this.physics.add.collider(this.hero, this.tertiarySpikeGroup, this.gameOver);
-        this.physics.world.on('worldbounds', (body, top, bottom, left, right) => {
-            if (top) {
-                body.setVelocity(0, this.config.speed);
-            } else if (bottom && body.gameObject.name === 'triggerSpikes') {
-                body.gameObject.destroy();
-                /*
-                 * console.log('generate new spike!!');
-                 * console.log('current group:', this.lastUsedGroup);
-                 * alert(`group: ${this.lastUsedGroup}`);
-                 */
-                switch (this.lastUsedGroup) {
-                    case QUATERNARY_SPIKES_GROUP: {
-                        this.lastUsedGroup = MAIN_SPIKES_GROUP;
-                        this.generateSpikes(spikeConfig, this.mainSpikeGroup, this.config.spikeQuantity);
-                        this.mainSpikeGroup.setVelocity(0, this.config.speed);
-                        this.secondarySpikeGroup.clear(true, true);
-                        break;
-                    }
-                    case TERTIARY_SPIKES_GROUP: {
-                        this.lastUsedGroup = QUATERNARY_SPIKES_GROUP;
-                        this.generateSpikes(spikeConfig, this.quaternarySpikeGroup, this.config.spikeQuantity);
-                        this.quaternarySpikeGroup.setVelocity(0, this.config.speed);
-                        this.mainSpikeGroup.clear(true, true);
-                        break;
-                    }
-                    case SECONDARY_SPIKES_GROUP: {
-                        this.lastUsedGroup = TERTIARY_SPIKES_GROUP;
-                        this.generateSpikes(spikeConfig, this.tertiarySpikeGroup, this.config.spikeQuantity);
-                        this.tertiarySpikeGroup.setVelocity(0, this.config.speed);
-                        this.quaternarySpikeGroup.clear(true, true);
-                        break;
-                    }
-                    case MAIN_SPIKES_GROUP: {
-                        this.lastUsedGroup = SECONDARY_SPIKES_GROUP;
-                        this.generateSpikes(spikeConfig, this.secondarySpikeGroup, this.config.spikeQuantity);
-                        this.secondarySpikeGroup.setVelocity(0, this.config.speed);
-                        this.tertiarySpikeGroup.clear(true, true);
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            }
-        });
+        this.physics.add.collider(this.hero, this.quaternarySpikeGroup, this.gameOver);
+
+        // set crystal collision
+        this.physics.add.collider(this.hero, this.mainCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.secondaryCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.tertiaryCrystalGroup, this.crystalAcquired);
+        this.physics.add.collider(this.hero, this.quaternaryCrystalGroup, this.crystalAcquired);
+        this.physics.world.on('worldbounds', this.handleSpikesAndCrystalsCreation);
 
         // console.log(this.cameras.main);
     }
@@ -252,8 +220,70 @@ export default class extends Phaser.Scene {
         }
     }
 
-    generateSpikes = (spikeConfig, group, quantity) => {
-        const spikesArray = generateRandomPositionsArray(quantity, this.config.spikeGenerationFactor);
+    handleSpikesAndCrystalsCreation = (body, top, bottom, left, right) => {
+        if (top) {
+            body.setVelocity(0, this.config.speed);
+        } else if (bottom && body.gameObject.name === 'triggerSpikes') {
+            body.gameObject.destroy();
+            /*
+             * console.log('generate new spike!!');
+             * console.log('current group:', this.lastUsedGroup);
+             * alert(`group: ${this.lastUsedGroup}`);
+             */
+            switch (this.lastUsedGroup) {
+                case QUATERNARY_SPIKES_GROUP: {
+                    this.lastUsedGroup = MAIN_SPIKES_GROUP;
+                    this.generateSpikes(this.mainSpikeGroup, this.config.spikeQuantity);
+                    this.generateCrystals(this.mainCrystalGroup);
+                    this.mainSpikeGroup.setVelocity(0, this.config.speed);
+                    this.secondarySpikeGroup.clear(true, true);
+                    break;
+                }
+                case TERTIARY_SPIKES_GROUP: {
+                    this.lastUsedGroup = QUATERNARY_SPIKES_GROUP;
+                    this.generateSpikes(this.quaternarySpikeGroup, this.config.spikeQuantity);
+                    this.generateCrystals(this.quaternaryCrystalGroup);
+                    this.quaternarySpikeGroup.setVelocity(0, this.config.speed);
+                    this.mainSpikeGroup.clear(true, true);
+                    break;
+                }
+                case SECONDARY_SPIKES_GROUP: {
+                    this.lastUsedGroup = TERTIARY_SPIKES_GROUP;
+                    this.generateSpikes(this.tertiarySpikeGroup, this.config.spikeQuantity);
+                    this.generateCrystals(this.tertiaryCrystalGroup);
+                    this.tertiarySpikeGroup.setVelocity(0, this.config.speed);
+                    this.quaternarySpikeGroup.clear(true, true);
+                    break;
+                }
+                case MAIN_SPIKES_GROUP: {
+                    this.lastUsedGroup = SECONDARY_SPIKES_GROUP;
+                    this.generateSpikes(this.secondarySpikeGroup, this.config.spikeQuantity);
+                    this.generateCrystals(this.secondaryCrystalGroup);
+                    this.secondarySpikeGroup.setVelocity(0, this.config.speed);
+                    this.tertiarySpikeGroup.clear(true, true);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    };
+
+    generateSpikes = (group, quantity) => {
+        const spikeConfig = {
+            height: 7,
+            width: 11,
+            x: 16,
+            y: 30,
+            key: 'spike',
+            origin: {
+                x: 0,
+                y: 0,
+            },
+        };
+
+        const spikesArray = generateRandomSpikePositionsArray(quantity, this.config.spikeGenerationFactor);
         let spikePosition = -this.config.screenSizeDifference;
         let side = SPIKE_TO_LEFT_SIDE;
 
@@ -275,7 +305,6 @@ export default class extends Phaser.Scene {
                 text.body.setCollideWorldBounds(true);
                 text.body.setImmovable();
                 text.setName('triggerSpikes');
-                // spike.setScale(2);
                 if (!this.game.config.physics.arcade.debug) {
                     text.setVisible(false);
                 }
@@ -336,10 +365,11 @@ export default class extends Phaser.Scene {
         this.input.on('pointerdown', () => null);
         clearInterval(this.scoring);
         this.setVelocityToAllGroups(0);
-        const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 50);
+        const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 80);
         const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
         graphics.fillRectShape(messageBox);
         this.add.text(35, 110, `Score:\n${this.getScore()}`).setDepth(999);
+        this.add.text(35, 140, `Tapped:\n${this.tapCount} times`).setDepth(999);
         // shake the camera
         this.cameras.main.shake(500);
 
@@ -351,19 +381,13 @@ export default class extends Phaser.Scene {
 
     moveHero = () => {
         this.hero.anims.play('jumping');
-        console.log(this.hero.scale);
+        // console.log(this.hero.scale);
 
         if (this.hero.scale === 1) {
             this.hero.setVelocityX(-this.config.jumpSpeed);
         } else {
             this.hero.setVelocityX(this.config.jumpSpeed);
         }
-    }
-
-    updateScore = () => {
-        // TODO
-        this.score += 1;
-        this.scoreText.setText(this.getScore());
     }
 
     getScore = () => `${this.score}`.padStart(8, '0')
@@ -410,5 +434,96 @@ export default class extends Phaser.Scene {
         this.secondarySpikeGroup.setVelocity(0, velocity);
         this.tertiarySpikeGroup.setVelocity(0, velocity);
         this.quaternarySpikeGroup.setVelocity(0, velocity);
+        this.mainCrystalGroup.setVelocity(0, velocity);
+        this.secondaryCrystalGroup.setVelocity(0, velocity);
+        this.tertiaryCrystalGroup.setVelocity(0, velocity);
+        this.quaternaryCrystalGroup.setVelocity(0, velocity);
+    }
+
+    generateCrystals = (group) => {
+        const crystalsArray = generateRandomCrystalPositionsArray();
+        let crystalPosition = -this.config.screenSizeDifference;
+
+        for (const crystalIndex in crystalsArray) {
+            crystalPosition += this.config.spaceBetweenSpikes;
+            if (crystalsArray[crystalIndex] === 0) {
+                continue;
+            }
+
+            const crystal = this.createCrystal(
+                this.game.config.width / 2,
+                crystalPosition,
+                crystalsArray[crystalIndex]
+            );
+            group.add(crystal);
+            crystal.body.setImmovable();
+            /*
+             * crystal.anims.play(
+             *     `crystal_0${crystalsArray[crystalIndex]}_flipping`
+             * );
+             */
+        }
+    };
+
+    createCrystal = (x, y, cristalNumber) => {
+        const frameName = `crystal_0${cristalNumber}`;
+        const frameRate = 4;
+        const crystal = this.make.sprite({
+            height: 16,
+            width: 16,
+            x,
+            y,
+            key: 'crystals',
+            frame: frameName,
+        });
+        crystal.setName(cristalNumber);
+
+        if (!this.anims.exists(`${frameName}_flipping_normal`)) {
+            this.anims.create({
+                key: `${frameName}_flipping_normal`,
+                frames: this.anims.generateFrameNames('crystals', {
+                    frames: [`${frameName}_flip_01`, frameName, `${frameName}_flip_01`, `${frameName}_flip_02`],
+                }),
+                frameRate,
+            });
+        }
+
+        if (!this.anims.exists(`${frameName}_flipping_reverse`)) {
+            this.anims.create({
+                key: `${frameName}_flipping_reverse`,
+                frames: this.anims.generateFrameNames('crystals', {
+                    frames: [`${frameName}_flip_01`, frameName, `${frameName}_flip_01`, `${frameName}_flip_02`],
+                }),
+                frameRate,
+            });
+        }
+
+        crystal.on('animationcomplete', () => {
+            const scale = crystal.scale;
+            crystal.setScale(scale * -1);
+            if (scale === 1) {
+                crystal.anims.play(`${frameName}_flipping_reverse`);
+                crystal.setFlipY(true);
+            } else {
+                crystal.anims.play(`${frameName}_flipping_normal`);
+                crystal.setFlipY(false);
+            }
+        });
+        crystal.anims.play(`${frameName}_flipping_normal`);
+
+        return crystal;
+    }
+
+    crystalAcquired = (hero, crystal) => {
+        if (crystal.texture.key === 'crystals') {
+            this.score += crystal.name * 25;
+            crystal.destroy();
+        }
+    }
+
+    updateScore = () => {
+        // TODO
+        this.score += 1;
+        this.scoreText.setText(this.getScore());
     }
 }
