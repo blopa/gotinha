@@ -25,14 +25,16 @@ export default class extends Phaser.Scene {
         this.score = 0;
         this.scoring = null;
         this.isGameOver = false;
+        this.doneIncreasingSpikeSpawningSpeed = false;
 
         this.config = {
             tileSize: 16,
             screenSizeDifference: 370,
             spikeQuantity: 4,
-            spaceBetweenSpikes: 12,
+            spaceBetweenSpikes: 16,
             jumpSpeed: 800,
-            speed: 100,
+            speed: 70,
+            spikeGenerationFactor: -0.3,
         };
 
         this.config = {
@@ -52,7 +54,7 @@ export default class extends Phaser.Scene {
         // console.log(this.config);
 
         // add background image
-        this.add.image(0, 0, 'background').setY(100);
+        this.add.image(0, 0, 'background').setOrigin(0, 0);
 
         // add hero sprites and physics
         this.hero = this.physics.add.sprite(this.config.heroXPosition, this.game.config.height - 40, 'hero', 'drop_10')
@@ -79,8 +81,7 @@ export default class extends Phaser.Scene {
                 height,
                 width: this.config.tileSize,
                 // angle: 90,
-                key: 'tiles',
-                frame: 29,
+                key: 'tile',
                 origin: {
                     x: 0,
                     y: 0,
@@ -92,8 +93,7 @@ export default class extends Phaser.Scene {
                 height,
                 width: this.config.tileSize,
                 // angle: 90,
-                key: 'tiles',
-                frame: 29,
+                key: 'tile',
                 flipX: true,
                 origin: {
                     x: 0,
@@ -114,12 +114,10 @@ export default class extends Phaser.Scene {
         const spikeConfig = {
             height: 7,
             width: 11,
-            x: 27,
+            x: 16,
             y: 30,
-            angle: 90,
-            key: 'items',
-            frame: 'items_18',
-            flipX: true,
+            // angle: 90,
+            key: 'spike',
             // immovable: true,
             origin: {
                 x: 0,
@@ -216,6 +214,8 @@ export default class extends Phaser.Scene {
             return;
         }
 
+        this.increaseDifficulty();
+
         // hero moving commands
         if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
             this.moveHero();
@@ -244,7 +244,7 @@ export default class extends Phaser.Scene {
     }
 
     generateSpikes = (spikeConfig, group, quantity) => {
-        const spikesArray = generateRandomPositionsArray(quantity);
+        const spikesArray = generateRandomPositionsArray(quantity, this.config.spikeGenerationFactor);
         let spikePosition = -this.config.screenSizeDifference;
         let side = SPIKE_TO_LEFT_SIDE;
 
@@ -255,8 +255,21 @@ export default class extends Phaser.Scene {
         // loop spikes for both sides
         for (const spikeIndex in spikesArray) {
             spikePosition += this.config.spaceBetweenSpikes;
-            // group.add(this.add.text(20, spikePosition - 10, `${spikesArray[spikeIndex]}I${spikeIndex} S${side}`).setDepth(999));
+            // group.add(this.add.text(20, spikePosition, `${spikesArray[spikeIndex]}I${spikeIndex}S${side}`).setDepth(999));
             if (spikesArray[spikeIndex] === 0) {
+                continue;
+            } else if (spikesArray[spikeIndex] === -1) {
+                const text = this.add.text(-10, spikePosition, '---------------')
+                    .setDepth(999);
+                group.add(text);
+                text.body.onWorldBounds = true;
+                text.body.setCollideWorldBounds(true);
+                text.body.setImmovable();
+                text.setName('triggerSpikes');
+                // spike.setScale(2);
+                if (!this.game.config.physics.arcade.debug) {
+                    text.setVisible(false);
+                }
                 continue;
             }
 
@@ -273,30 +286,22 @@ export default class extends Phaser.Scene {
                     y: spikePosition,
                 });
                 group.add(spike);
-                spike.body.setOffset(-10, -6).setImmovable();
+                spike.body.setOffset(0, 2).setImmovable();
                 side = SPIKE_TO_RIGHT_SIDE;
             } else {
                 spike = this.make.sprite({
                     ...spikeConfig,
                     y: spikePosition,
-                    x: 123,
-                    flipY: true,
+                    x: 108,
+                    flipX: true,
                 });
                 group.add(spike);
-                spike.body.setOffset(3, -6).setImmovable();
+                spike.body.setOffset(0, 2).setImmovable();
                 side = SPIKE_TO_LEFT_SIDE;
             }
 
-            spike.body.height = 6; // this is actually the width
-            if (Number(spikeIndex) + 1 === spikesArray.length) {
-                // the last spike is always 1
-                spike.body.onWorldBounds = true;
-                spike.body.setCollideWorldBounds(true);
-                spike.setName('triggerSpikes');
-                // spike.setScale(2);
-                spike.setVisible(false);
-                this.lastGroupSpikePosition = originalSide;
-            }
+            spike.body.height = 12; // this is actually the width
+            this.lastGroupSpikePosition = originalSide;
         }
 
         /*
@@ -316,13 +321,10 @@ export default class extends Phaser.Scene {
         // console.log('game over!');
 
         this.isGameOver = true;
+        this.scoreText.destroy();
         this.input.on('pointerdown', () => null);
         clearInterval(this.scoring);
-        this.blocksGroup.setVelocity(0, 0);
-        this.mainSpikeGroup.setVelocity(0, 0);
-        this.secondarySpikeGroup.setVelocity(0, 0);
-        this.tertiarySpikeGroup.setVelocity(0, 0);
-        this.quaternarySpikeGroup.setVelocity(0, 0);
+        this.setVelocityToAllGroups(0);
         const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 50);
         const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
         graphics.fillRectShape(messageBox);
@@ -353,4 +355,42 @@ export default class extends Phaser.Scene {
     }
 
     getScore = () => `${this.score}`.padStart(8, '0')
+
+    increaseDifficulty = () => {
+        if (!this.doneIncreasingSpikeSpawningSpeed) {
+            if (this.score > 700) {
+                this.config.spikeGenerationFactor = 0.4;
+                this.config.speed = 140;
+                this.doneIncreasingSpikeSpawningSpeed = true;
+            } else if (this.score > 600) {
+                this.config.spikeGenerationFactor = 0.3;
+                this.config.speed = 130;
+            } else if (this.score > 500) {
+                this.config.spikeGenerationFactor = 0.2;
+                this.config.speed = 120;
+            } else if (this.score > 400) {
+                this.config.spikeGenerationFactor = 0.1;
+                this.config.speed = 110;
+            } else if (this.score > 300) {
+                this.config.spikeGenerationFactor = 0;
+                this.config.speed = 100;
+            } else if (this.score > 200) {
+                this.config.spikeGenerationFactor = -0.1;
+                this.config.speed = 90;
+            } else if (this.score > 100) {
+                this.config.spikeGenerationFactor = -0.2;
+                this.config.speed = 80;
+            }
+
+            this.setVelocityToAllGroups(this.config.speed);
+        }
+    }
+
+    setVelocityToAllGroups = (velocity) => {
+        this.blocksGroup.setVelocity(0, velocity);
+        this.mainSpikeGroup.setVelocity(0, velocity);
+        this.secondarySpikeGroup.setVelocity(0, velocity);
+        this.tertiarySpikeGroup.setVelocity(0, velocity);
+        this.quaternarySpikeGroup.setVelocity(0, velocity);
+    }
 }
