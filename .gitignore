@@ -44,5 +44,8 @@ bin/*
 !/plugins/fetch.json
 plugins/*
 platforms/*
+platforms/android/.gradle/*
 js/**/*.js
 js/**/*.js.map
+phaser/dist
+phaser/node_modules
