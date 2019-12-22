@@ -422,6 +422,10 @@ export default class extends Phaser.Scene {
     handleHeroMoving = () => {
         // hero moving commands
         if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
+            if (!this.hasGameStarted) {
+                this.handleStartGame();
+            }
+
             this.moveHero();
         }
 
