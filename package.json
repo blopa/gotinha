@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-phaser": "npm run --prefix phaser deploy",
     "dev-phaser": "npm run --prefix phaser dev",
-    "deploy": "npm run --prefix phaser deploy && cordova build android"
+    "deploy": "npm run --prefix phaser deploy && cordova build --release android",
+    "build": "npm run --prefix phaser deploy && cordova build android"
   },
   "keywords": [
     "ecosystem:cordova"
