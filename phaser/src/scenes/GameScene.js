@@ -30,8 +30,9 @@ export default class extends Phaser.Scene {
         this.scoring = null;
         this.hasGameStarted = false;
         this.isGameOver = false;
+        this.heroIsMoving = true;
         this.playSoundeffects = true;
-        this.playSoundtrack = true;
+        this.playSoundtrack = false;
         this.doneIncreasingSpikeSpawningSpeed = false;
 
         this.config = {
@@ -142,33 +143,7 @@ export default class extends Phaser.Scene {
         }
 
         this.increaseDifficulty();
-
-        // hero moving commands
-        if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
-            this.moveHero();
-        }
-
-        if (this.hero.x < this.config.tileSize) {
-            // left side
-            this.hero.setVelocityX(0);
-            this.hero.x = this.config.tileSize;
-            // this.hero.y = this.hero.y + 15;
-            this.hero.body.setOffset(30, -2);
-            this.hero.setScale(-1);
-            this.hero.setFlipY(true);
-            this.hero.anims.play('walking');
-        }
-
-        if (this.hero.x > this.config.heroXPosition) {
-            // right side
-            this.hero.setVelocityX(0);
-            this.hero.x = this.config.heroXPosition;
-            // this.hero.y = this.config.heroYPosition;
-            this.hero.body.setOffset(0, 2);
-            this.hero.setScale(1);
-            this.hero.setFlipY(false);
-            this.hero.anims.play('walking');
-        }
+        this.handleHeroMoving();
 
         // calculates the restart of the blocks chink
         for (const blockChunk of this.blocksGroup.children.entries) {
@@ -212,7 +187,7 @@ export default class extends Phaser.Scene {
 
         // set game as started
         this.hasGameStarted = true;
-    }
+    };
 
     generateBlockChunks = (group) => {
         const height = this.config.chunkSize;
@@ -254,7 +229,7 @@ export default class extends Phaser.Scene {
 
         // set group speed
         group.setVelocity(0, this.config.speed);
-    }
+    };
 
     handleSpikesAndCrystalsCreation = (body, top, bottom, left, right) => {
         if (top) {
@@ -385,7 +360,7 @@ export default class extends Phaser.Scene {
          * group.add(text);
          * text.body.setImmovable();
          */
-    }
+    };
 
     gameOver = (hero, foe) => {
         if (foe.name === 'triggerSpikes' || this.isGameOver) {
@@ -423,8 +398,13 @@ export default class extends Phaser.Scene {
     };
 
     moveHero = () => {
+        if (this.heroIsMoving) {
+            return;
+        }
+
         this.tapCount += 1;
         this.hero.anims.play('jumping');
+        this.heroIsMoving = true;
 
         // play jump sound
         if (this.playSoundeffects) {
@@ -437,9 +417,40 @@ export default class extends Phaser.Scene {
         } else {
             this.hero.setVelocityX(this.config.jumpSpeed);
         }
-    }
+    };
 
-    getScore = () => `${this.score}`.padStart(8, '0')
+    handleHeroMoving = () => {
+        // hero moving commands
+        if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
+            this.moveHero();
+        }
+
+        if (this.hero.x < this.config.tileSize) {
+            // left side
+            this.hero.setVelocityX(0);
+            this.hero.x = this.config.tileSize;
+            // this.hero.y = this.hero.y + 15;
+            this.hero.body.setOffset(30, -2);
+            this.hero.setScale(-1);
+            this.hero.setFlipY(true);
+            this.hero.anims.play('walking');
+            this.heroIsMoving = false;
+        }
+
+        if (this.hero.x > this.config.heroXPosition) {
+            // right side
+            this.hero.setVelocityX(0);
+            this.hero.x = this.config.heroXPosition;
+            // this.hero.y = this.config.heroYPosition;
+            this.hero.body.setOffset(0, 2);
+            this.hero.setScale(1);
+            this.hero.setFlipY(false);
+            this.hero.anims.play('walking');
+            this.heroIsMoving = false;
+        }
+    };
+
+    getScore = () => `${this.score}`.padStart(8, '0');
 
     increaseDifficulty = () => {
         if (!this.doneIncreasingSpikeSpawningSpeed) {
@@ -475,7 +486,7 @@ export default class extends Phaser.Scene {
 
             this.setVelocityToAllGroups(this.config.speed);
         }
-    }
+    };
 
     setVelocityToAllGroups = (velocity) => {
         this.blocksGroup.setVelocity(0, velocity);
@@ -487,7 +498,7 @@ export default class extends Phaser.Scene {
         this.secondaryCrystalGroup.setVelocity(0, velocity);
         this.tertiaryCrystalGroup.setVelocity(0, velocity);
         this.quaternaryCrystalGroup.setVelocity(0, velocity);
-    }
+    };
 
     generateCrystals = (group) => {
         const crystalsArray = generateRandomCrystalPositionsArray();
@@ -561,7 +572,7 @@ export default class extends Phaser.Scene {
 
         crystal.anims.play(`${frameName}_flipping_normal`);
         return crystal;
-    }
+    };
 
     crystalAcquired = (hero, crystal) => {
         if (crystal.texture.key === 'crystals') {
@@ -573,7 +584,7 @@ export default class extends Phaser.Scene {
             }
             crystal.destroy();
         }
-    }
+    };
 
     updateScore = () => {
         // TODO

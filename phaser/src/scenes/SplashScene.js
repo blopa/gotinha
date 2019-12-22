@@ -16,7 +16,6 @@ export default class extends Phaser.Scene {
         // atlas
         this.load.atlas('hero', 'assets/images/drop.png', 'assets/atlas/drop_atlas.json');
         this.load.atlas('crystals', 'assets/images/crystals.png', 'assets/atlas/crystals_atlas.json');
-        this.load.atlas('crystals', 'assets/images/crystals.png', 'assets/atlas/crystals_atlas.json');
         this.load.atlas('audio', 'assets/images/audio.png', 'assets/atlas/audio_atlas.json');
 
         // sounds

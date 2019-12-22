@@ -30,10 +30,12 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             hash: true,
-            // minify: {
-            //     collapseWhitespace: true,
-            //     preserveLineBreaks: false,
-            // },
+            /*
+             * minify: {
+             *     collapseWhitespace: true,
+             *     preserveLineBreaks: false,
+             * },
+             */
             title: 'Gotinha',
             favicon: `${IMAGE_DIR}/favicon.ico`,
             template: `${MAIN_DIR}/index.html`,
