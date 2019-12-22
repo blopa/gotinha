@@ -30,7 +30,7 @@ export default class extends Phaser.Scene {
         this.scoring = null;
         this.hasGameStarted = false;
         this.isGameOver = false;
-        this.heroIsMoving = true;
+        this.heroIsMoving = false;
         this.playSoundeffects = true;
         this.playSoundtrack = false;
         this.doneIncreasingSpikeSpawningSpeed = false;
@@ -164,6 +164,9 @@ export default class extends Phaser.Scene {
     };
 
     startGame = () => {
+        // set game as started
+        this.hasGameStarted = true;
+
         // add score text and score count
         this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
         this.scoring = setInterval(this.updateScore, 300);
@@ -184,9 +187,6 @@ export default class extends Phaser.Scene {
         this.physics.add.collider(this.hero, this.tertiaryCrystalGroup, this.crystalAcquired);
         this.physics.add.collider(this.hero, this.quaternaryCrystalGroup, this.crystalAcquired);
         this.physics.world.on('worldbounds', this.handleSpikesAndCrystalsCreation);
-
-        // set game as started
-        this.hasGameStarted = true;
     };
 
     generateBlockChunks = (group) => {
@@ -424,9 +424,9 @@ export default class extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.spacebarKey)) {
             if (!this.hasGameStarted) {
                 this.handleStartGame();
+            } else {
+                this.moveHero();
             }
-
-            this.moveHero();
         }
 
         if (this.hero.x < this.config.tileSize) {
