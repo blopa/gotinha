@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-phaser": "npm run --prefix phaser deploy",
-    "dev-phaser": "npm run --prefix phaser dev"
+    "dev-phaser": "npm run --prefix phaser dev",
+    "deploy": "npm run --prefix phaser deploy && cordova build android"
   },
   "keywords": [
     "ecosystem:cordova"
@@ -15,8 +16,9 @@
   "author": "Pablo Pirata",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^8.1.0",
-    "cordova-plugin-insomnia": "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git"
+    "cordova-android": "^7.1.4",
+    "cordova-plugin-insomnia": "git+https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
+    "cordova-plugin-whitelist": "1"
   },
   "devDependencies": {
     "cordova-plugin-whitelist": "^1.3.4"

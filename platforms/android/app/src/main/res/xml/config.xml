@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.example.gotinha" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="Insomnia">
+        <param name="android-package" value="nl.xservices.plugins.Insomnia" />
+    </feature>
     <feature name="Whitelist">
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
-    </feature>
-    <feature name="Insomnia">
-        <param name="android-package" value="nl.xservices.plugins.Insomnia" />
     </feature>
     <name>Gotinha</name>
     <description>
@@ -23,6 +23,12 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
+    <icon density="ldpi" src="res/android/icons/ldpi.png" />
+    <icon density="mdpi" src="res/android/icons/mdpi.png" />
+    <icon density="hdpi" src="res/android/icons/hdpi.png" />
+    <icon density="xhdpi" src="res/android/icons/xhdpi.png" />
+    <icon density="xxhdpi" src="res/android/icons/xxhdpi.png" />
+    <icon density="xxxhdpi" src="res/android/icons/xxxhdpi.png" />
     <preference name="loglevel" value="DEBUG" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />

@@ -35,3 +35,14 @@ docs
 platforms/android/app/build/outputs/apk/debug/*
 www
 run-note.txt
+
+### ApacheCordova ###
+# Apache Cordova generated files and directories
+bin/*
+!/plugins
+!/plugins/android.json
+!/plugins/fetch.json
+plugins/*
+platforms/*
+js/**/*.js
+js/**/*.js.map

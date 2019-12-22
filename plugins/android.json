@@ -7,10 +7,10 @@
     "files": {}
   },
   "installed_plugins": {
-    "cordova-plugin-whitelist": {
+    "cordova-plugin-insomnia": {
       "PACKAGE_NAME": "com.example.gotinha"
     },
-    "cordova-plugin-insomnia": {
+    "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.example.gotinha"
     }
   },
