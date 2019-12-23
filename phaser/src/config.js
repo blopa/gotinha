@@ -16,7 +16,7 @@ export default {
         default: 'arcade',
         arcade: {
             enableBody: true,
-            debug: false,
+            debug: true,
             /*
              * gravity: {
              *     y: 500,

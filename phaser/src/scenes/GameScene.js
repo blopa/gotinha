@@ -431,26 +431,24 @@ export default class extends Phaser.Scene {
 
         if (this.hero.x < this.config.tileSize) {
             // left side
+            this.heroIsMoving = false;
             this.hero.setVelocityX(0);
             this.hero.x = this.config.tileSize;
-            // this.hero.y = this.hero.y + 15;
             this.hero.body.setOffset(30, -2);
             this.hero.setScale(-1);
             this.hero.setFlipY(true);
             this.hero.anims.play('walking');
-            this.heroIsMoving = false;
         }
 
         if (this.hero.x > this.config.heroXPosition) {
             // right side
+            this.heroIsMoving = false;
             this.hero.setVelocityX(0);
             this.hero.x = this.config.heroXPosition;
-            // this.hero.y = this.config.heroYPosition;
             this.hero.body.setOffset(0, 2);
             this.hero.setScale(1);
             this.hero.setFlipY(false);
             this.hero.anims.play('walking');
-            this.heroIsMoving = false;
         }
     };
 

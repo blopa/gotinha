@@ -10,12 +10,12 @@ export default class extends Phaser.Scene {
         this.load.image('background', 'assets/images/background.png');
         this.load.image('tap', 'assets/images/tap.png');
         this.load.image('gotinha', 'assets/images/gotinha.png');
-        this.load.image('tile', 'assets/images/tile.png');
-        this.load.image('spike', 'assets/images/spike.png');
+        this.load.image('tile', 'assets/images/christmas_theme/tile.png');
+        this.load.image('spike', 'assets/images/christmas_theme/spike.png');
 
         // atlas
-        this.load.atlas('hero', 'assets/images/drop.png', 'assets/atlas/drop_atlas.json');
-        this.load.atlas('crystals', 'assets/images/crystals.png', 'assets/atlas/crystals_atlas.json');
+        this.load.atlas('hero', 'assets/images/christmas_theme/drop.png', 'assets/atlas/drop_christmas_atlas.json');
+        this.load.atlas('crystals', 'assets/images/christmas_theme/crystals.png', 'assets/atlas/crystals_atlas.json');
         this.load.atlas('audio', 'assets/images/audio.png', 'assets/atlas/audio_atlas.json');
 
         // sounds

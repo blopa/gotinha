@@ -1,0 +1,56 @@
+{
+    "frames": [
+        {
+            "filename": "drop_01",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 15,
+                "h": 36
+            },
+            "anchor": {
+                "x": 1,
+                "y": 0
+            }
+        },
+        {
+            "filename": "drop_02",
+            "frame": {
+                "x": 15,
+                "y": 0,
+                "w": 25,
+                "h": 35
+            },
+            "anchor": {
+                "x": 1,
+                "y": 0
+            }
+        },
+        {
+            "filename": "drop_03",
+            "frame": {
+                "x": 40,
+                "y": 0,
+                "w": 36,
+                "h": 33
+            },
+            "anchor": {
+                "x": 1,
+                "y": 0
+            }
+        },
+        {
+            "filename": "drop_jump_01",
+            "frame": {
+                "x": 76,
+                "y": 0,
+                "w": 39,
+                "h": 22
+            },
+            "anchor": {
+                "x": 1,
+                "y": 0
+            }
+        }
+    ]
+}
