@@ -12,6 +12,7 @@ export default class extends Phaser.Scene {
         this.load.image('gotinha', 'assets/images/gotinha.png');
         this.load.image('tile', 'assets/images/christmas_theme/tile.png');
         this.load.image('spike', 'assets/images/christmas_theme/spike.png');
+        this.load.image('snow', 'assets/images/christmas_theme/snow.png');
 
         // atlas
         this.load.atlas('hero', 'assets/images/christmas_theme/drop.png', 'assets/atlas/drop_christmas_atlas.json');

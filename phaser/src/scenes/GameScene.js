@@ -67,6 +67,8 @@ export default class extends Phaser.Scene {
 
         // add background image
         this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.add.image(0, 0, 'snow').setOrigin(null, 0);
+
         this.tapIcon = this.add.image(this.game.config.width / 2, this.game.config.height - 60, 'tap');
         /*
          * TODO
@@ -75,11 +77,11 @@ export default class extends Phaser.Scene {
          */
         this.gotinhaLogo = this.add.image(this.game.config.width / 2, 100, 'gotinha')
             .setScale(0.5)
-            .setDepth(999);
+            .setDepth(10);
         // console.log(this.config);
         this.createdByText = this.add.text(30, this.game.config.height - 150, ' Created by\nPablo Pirata', {
             fontSize: '13px',
-        }).setDepth(999);
+        }).setDepth(20);
 
         // this.add.existing(this.createCrystal(50, 50, 1));
 
@@ -170,7 +172,8 @@ export default class extends Phaser.Scene {
         this.hasGameStarted = true;
 
         // add score text and score count
-        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000').setDepth(999);
+        this.scoreText = this.add.text(35, this.game.config.height - 20, '00000000')
+            .setDepth(20);
         this.scoring = setInterval(this.updateScore, 300);
 
         // generate spikes
@@ -312,7 +315,7 @@ export default class extends Phaser.Scene {
                 continue;
             } else if (spikesArray[spikeIndex] === -1) {
                 const text = this.add.text(-10, spikePosition, '---------------')
-                    .setDepth(999);
+                    .setDepth(100);
                 group.add(text);
                 text.body.onWorldBounds = true;
                 text.body.setCollideWorldBounds(true);
@@ -390,8 +393,10 @@ export default class extends Phaser.Scene {
         const messageBox = new Phaser.Geom.Rectangle(25, 100, 100, 80);
         const graphics = this.add.graphics({ fillStyle: { color: 0x095165 } });
         graphics.fillRectShape(messageBox);
-        this.add.text(35, 110, `Score:\n${this.getScore()}`).setDepth(999);
-        this.add.text(35, 145, `Tapped:\n${this.tapCount} times`).setDepth(999);
+        this.add.text(35, 110, `Score:\n${this.getScore()}`)
+            .setDepth(20);
+        this.add.text(35, 145, `Tapped:\n${this.tapCount} times`)
+            .setDepth(20);
 
         // restart game
         this.time.delayedCall(500, () => {
