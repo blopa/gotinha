@@ -40,7 +40,7 @@ export default class extends Phaser.Scene {
             screenSizeDifference: 370,
             spikeQuantity: 4,
             spaceBetweenSpikes: 16,
-            jumpSpeed: 800,
+            jumpSpeed: 900,
             speed: 70,
             spikeGenerationFactor: -0.3,
         };
@@ -134,7 +134,9 @@ export default class extends Phaser.Scene {
         this.hero.anims.play('walking');
 
         // set collision
-        this.physics.add.collider(this.hero, this.blocksGroup);
+        this.physics.add.collider(this.hero, this.blocksGroup, () => {
+
+        });
     }
 
     update() {
@@ -449,6 +451,16 @@ export default class extends Phaser.Scene {
             this.hero.setScale(1);
             this.hero.setFlipY(false);
             this.hero.anims.play('walking');
+        }
+
+        // hack to fix the bug of flying drop...
+        if (!this.heroIsMoving) {
+            // console.log(this.hero.scale, this.hero.x);
+            if (this.hero.scale === -1 && this.hero.x !== this.config.tileSize) {
+                this.hero.setX(this.config.tileSize);
+            } else if (this.hero.scale === 1 && this.hero.x !== this.config.heroXPosition) {
+                this.hero.setX(this.config.heroXPosition);
+            }
         }
     };
 
