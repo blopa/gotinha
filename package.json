@@ -1,7 +1,7 @@
 {
   "name": "com.werules.gotinha",
   "displayName": "Gotinha",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple game to challenge your friends for the best score.",
   "main": "index.js",
   "scripts": {

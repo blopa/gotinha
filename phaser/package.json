@@ -1,6 +1,6 @@
 {
   "name": "gotinha",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple game to challenge your friends for the best score.",
   "author": "Pablo Pirata",
   "main": "index.js",
