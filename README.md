@@ -9,6 +9,7 @@ Gotinha is a open source Phaser 3 game available on [Google Play](https://play.g
 It was always my dream to make my own game, and after trying Unity a couple years ago, I decided to try it again with something I'm more familiar with: Javascript. As a frontend developer, Javascript is already the language that I write most of my code at work and also in my personal projects, and after a quick search I was able to find the amazing PhaserJS Framework for building 2D web games.
 
 My goal was to make a game from scratch, not only code, but sprites and sound effects as well. Of course this was only possible because of some amazing free/open source softwares available today. So I'd like to say a special thank you to:
+- [lean/phaser-es6-webpack](https://github.com/lean/phaser-es6-webpack) and [ReydVires/phaser3-cordova](https://github.com/ReydVires/phaser3-cordova) for the base of this project
 - [npm](https://github.com/npm/cli) for javascript packager managing
 - [eslint](https://github.com/eslint/eslint) for code linter
 - [Phaser](https://github.com/photonstorm/phaser) for the game engine
