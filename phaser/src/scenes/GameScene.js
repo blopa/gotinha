@@ -410,6 +410,7 @@ export default class extends Phaser.Scene {
 
         // restart game
         this.time.delayedCall(500, () => {
+            this.input.keyboard.on('keyup-SPACE', () => this.scene.restart());
             this.input.on('pointerup', () => this.scene.restart());
         });
     };
