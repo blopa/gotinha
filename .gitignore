@@ -28,4 +28,25 @@ docs
 .eslintcache
 .stylelintcache
 .idea
+.idea/*
+.idea/workspace.xml
 .vscode/
+
+platforms/android/app/build/outputs/apk/debug/*
+www
+run-note.txt
+
+### ApacheCordova ###
+# Apache Cordova generated files and directories
+bin/*
+!/plugins
+!/plugins/android.json
+!/plugins/fetch.json
+plugins/*
+platforms/*
+platforms/android/build/*
+platforms/android/.gradle/*
+js/**/*.js
+js/**/*.js.map
+phaser/dist
+phaser/node_modules
