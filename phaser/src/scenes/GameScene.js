@@ -18,7 +18,7 @@ export default class extends Phaser.Scene {
     init() {
         // TODO
         this.spacebarKey = this.input.keyboard.addKey('SPACE');
-        this.input.once('pointerdown', this.handleStartGame);
+        this.input.once('pointerup', this.handleStartGame);
 
         this.hero = null;
         this.tapIcon = null;
@@ -67,7 +67,6 @@ export default class extends Phaser.Scene {
 
         // add background image
         this.add.image(0, 0, 'background').setOrigin(0, 0);
-        this.add.image(0, 0, 'snow').setOrigin(null, 0);
 
         this.tapIcon = this.add.image(this.game.config.width / 2, this.game.config.height - 60, 'tap');
         /*
@@ -164,7 +163,7 @@ export default class extends Phaser.Scene {
         this.gotinhaLogo.destroy();
 
         this.moveHero();
-        this.input.on('pointerdown', this.moveHero);
+        this.input.on('pointerup', this.moveHero);
     };
 
     startGame = () => {
@@ -398,9 +397,20 @@ export default class extends Phaser.Scene {
         this.add.text(35, 145, `Tapped:\n${this.tapCount} times`)
             .setDepth(20);
 
+        const shareOnTwitter = this.add.image(75, 200, 'tweet')
+            .setDepth(20);
+        shareOnTwitter.setInteractive();
+        const tweetText = `I got ${this.score} points on Gotinha, how many can you get?`;
+        const url = 'https://bit.ly/2StxRUT';
+        shareOnTwitter.on('pointerup', () => {
+            window.open(
+                `https://twitter.com/intent/tweet?hashtags=GotinhaScore&text=${tweetText}%20${url}`
+            );
+        });
+
         // restart game
         this.time.delayedCall(500, () => {
-            this.input.on('pointerdown', () => this.scene.restart());
+            this.input.on('pointerup', () => this.scene.restart());
         });
     };
 
