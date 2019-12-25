@@ -1,7 +1,7 @@
 # Gotinha (Phaser + Webpack + ES6 + Cordova project)
 Making your own game is a dream of many people, including myself, and with the amount of content we have available these days, it was never that easy to build one. [read more...](https://google.com)
 
-[Download it from Google Play](https://play.google.com/store/apps/details?id=com.werules.gotinha)
+[Download it from Google Play](https://play.google.com/store/apps/details?id=com.werules.gotinha) or [play it on your browser](https://blopa.github.io/gotinha/)
 
 ## About
 Gotinha is a open source Phaser 3 game available on [Google Play](https://play.google.com/store/apps/details?id=com.werules.gotinha).
