@@ -41,11 +41,11 @@ Run `npm run deploy` to build the game and the APK file at `platforms\android\ap
 To build the Phaser game only, run `npm run deploy-phaser`
 
 ## Screenshot
-![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/v2/screenshot_1.png)
+![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/screenshot_1.jpg)
 
-![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/v2/screenshot_2.png)
+![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/screenshot_2.jpg)
 
-![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/v2/screenshot_3.png)
+![ScreenShot](https://raw.githubusercontent.com/blopa/gotinha/master/screenshots/screenshot_3.jpg)
 
 
 Please don't forget to credit if you use this for your own project :)
